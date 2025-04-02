@@ -126,6 +126,11 @@
     .article-list a {
       font-size: 14px;
     }
+
+    /* 移动端只显示3个月数据 */
+    .calendar {
+      range: [echarts.format.formatTime('yyyy-MM-dd', new Date(new Date().setMonth(new Date().getMonth() - 3))), echarts.format.formatTime('yyyy-MM-dd', new Date())];
+    }
   }
 </style>
 
@@ -171,10 +176,11 @@
           heatmapData.push([date, categories.totalWords]);
         }
 
-        // 计算最近6个月日期范围
+        // 计算最近日期范围（桌面端6个月，移动端3个月）
         var endDate = new Date();
         var startDate = new Date();
-        startDate.setMonth(startDate.getMonth() - 6);
+        var isMobile = window.matchMedia('(max-width: 600px)').matches;
+        startDate.setMonth(startDate.getMonth() - (isMobile ? 3 : 9));
         var startDateStr = echarts.format.formatTime('yyyy-MM-dd', startDate);
         var endDateStr = echarts.format.formatTime('yyyy-MM-dd', endDate);
 
