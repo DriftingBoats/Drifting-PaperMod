@@ -1,11 +1,14 @@
-{{- if lt hugo.Version "0.146.0" }}
-{{- errorf "=> hugo v0.146.0 or greater is required for hugo-PaperMod to build " }}
+{{- if lt hugo.Version "0.125.7" }}
+{{- errorf "=> hugo v0.125.7 or greater is required for hugo-PaperMod to build " }}
 {{- end -}}
 
 <!DOCTYPE html>
 <html lang="{{ site.Language }}" dir="{{ .Language.LanguageDirection | default "auto" }}">
 
 <head>
+    {{- if .Site.Params.comments }}
+        <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
+    {{- end }}
     {{- partial "head.html" . }}
 </head>
 
