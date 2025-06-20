@@ -6,15 +6,31 @@
 
     <!-- 初始化 Waline 的脚本 -->
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
+        // 确保页面完全加载后再初始化
+        function initWaline() {
+            // 检查容器是否存在
+            const walineContainers = document.querySelectorAll('.waline-container[data-path]');
+            if (walineContainers.length === 0) {
+                console.warn('未找到 Waline 容器');
+                return;
+            }
 
-            // 初始化 Waline
-            const walineInit = () => {
-                import('https://unpkg.com/@waline/client@v3/dist/waline.js').then(({ init }) => {
-                    const walineContainers = document.querySelectorAll('.waline-container[data-path]');
+            // 动态导入 Waline
+            import('https://unpkg.com/@waline/client@v3/dist/waline.js')
+                .then(({ init }) => {
                     walineContainers.forEach(container => {
-                        if (!container.__waline__) {
-                            const path = container.getAttribute('data-path');
+                        // 避免重复初始化
+                        if (container.__waline__) {
+                            return;
+                        }
+
+                        const path = container.getAttribute('data-path');
+                        if (!path) {
+                            console.warn('Waline 容器缺少 data-path 属性');
+                            return;
+                        }
+
+                        try {
                             container.__waline__ = init({
                                 el: container,
                                 serverURL: '{{ .Site.Params.waline.serverURL }}',
@@ -35,16 +51,28 @@
                                     placeholder: '{{ .Site.Params.waline.locale.placeholder }}',
                                 },
                                 path: path,
-                                dark: '{{ .Site.Params.waline.dark | default "body.dark" }}', 
+                                dark: '{{ .Site.Params.waline.dark | default "body.dark" }}'
                             });
+                            console.log('Waline 初始化成功:', path);
+                        } catch (error) {
+                            console.error('Waline 初始化失败:', error);
                         }
                     });
-                }).catch(error => {
-                    console.error("Waline 初始化失败：", error);
+                })
+                .catch(error => {
+                    console.error('Waline 模块加载失败:', error);
                 });
-            };
+        }
 
-            walineInit();
-        });
+        // 多重保险确保DOM加载完成
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initWaline);
+        } else {
+            // DOM已经加载完成
+            initWaline();
+        }
+
+        // 额外的延迟初始化，防止某些情况下DOM还未完全准备好
+        setTimeout(initWaline, 100);
     </script>
 {{- end }}

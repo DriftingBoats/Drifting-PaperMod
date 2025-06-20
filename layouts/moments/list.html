@@ -382,11 +382,9 @@
     </script>
 
     <!-- 在页面底部引入 Waline 评论脚本并初始化 -->
-    <script type="module">
-        import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
-        
+    <script>
+        // Waline 配置参数
         const walineParams = {
-            /* 这里根据你自己的 Waline 配置进行调整 */
             serverURL: '{{ .Site.Params.waline.serverURL }}',
             lang: '{{ .Site.Params.waline.lang | default "zh-CN" }}',
             visitor: '{{ .Site.Params.waline.visitor | default "匿名者" }}',
@@ -410,40 +408,62 @@
         
         // 点击"添加评论"按钮时，显示对应卡片下的评论区
         window.showComment = function(element) {
-            const slug = element.getAttribute('data-slug');
-            const path = element.getAttribute('data-path');
-            const commentElement = document.getElementById('waline-' + slug);
+            try {
+                const slug = element.getAttribute('data-slug');
+                const path = element.getAttribute('data-path');
+                
+                if (!slug || !path) {
+                    console.error('缺少必要的 data-slug 或 data-path 属性');
+                    return;
+                }
+                
+                const commentElement = document.getElementById('waline-' + slug);
+                if (!commentElement) {
+                    console.error('未找到评论容器:', 'waline-' + slug);
+                    return;
+                }
 
-            // 如果已激活则清空
-            if (commentElement.classList.contains('active')) {
-                commentElement.classList.remove('active');
-                commentElement.innerHTML = '';
-                return;
+                // 如果已激活则清空
+                if (commentElement.classList.contains('active')) {
+                    commentElement.classList.remove('active');
+                    commentElement.innerHTML = '';
+                    return;
+                }
+
+                // 移除其它所有已激活评论区
+                const allComments = document.querySelectorAll('.waline-container');
+                allComments.forEach(el => {
+                    el.classList.remove('active');
+                    el.innerHTML = '';
+                });
+
+                // 激活当前评论区
+                commentElement.classList.add('active');
+
+                // 动态导入并初始化 Waline
+                import('https://unpkg.com/@waline/client@v3/dist/waline.js')
+                    .then(({ init }) => {
+                        init({
+                            el: commentElement,
+                            serverURL: walineParams.serverURL,
+                            lang: walineParams.lang,
+                            visitor: walineParams.visitor,
+                            emoji: walineParams.emoji,
+                            requiredMeta: walineParams.requiredMeta,
+                            locale: walineParams.locale,
+                            path: path,
+                            dark: walineParams.dark,
+                            reaction: false
+                        });
+                        console.log('Moments Waline 初始化成功:', path);
+                    })
+                    .catch(error => {
+                        console.error('Waline 模块加载失败:', error);
+                        commentElement.innerHTML = '<p style="color: red;">评论加载失败，请刷新页面重试</p>';
+                    });
+            } catch (error) {
+                console.error('showComment 函数执行失败:', error);
             }
-
-            // 移除其它所有已激活评论区
-            const allComments = document.querySelectorAll('.waline-container');
-            allComments.forEach(el => {
-                el.classList.remove('active');
-                el.innerHTML = '';
-            });
-
-            // 激活当前评论区
-            commentElement.classList.add('active');
-
-            // 初始化 Waline
-            init({
-                el: commentElement,
-                serverURL: walineParams.serverURL,
-                lang: walineParams.lang,
-                visitor: walineParams.visitor,
-                emoji: walineParams.emoji,
-                requiredMeta: walineParams.requiredMeta,
-                locale: walineParams.locale,
-                path: path,
-                dark: walineParams.dark,
-                reaction: false
-            });
         }
     </script>
 
