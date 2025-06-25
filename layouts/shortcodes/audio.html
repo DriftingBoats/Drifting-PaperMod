@@ -1,4 +1,5 @@
 {{ $src := .Get "src" }}
+{{ $title := .Get "title" }}
 {{ $id := printf "audio-%d" now.Unix }}
 
 <div class="threads-audio-player" id="{{ $id }}">
@@ -220,7 +221,7 @@
 
   </style>
   
-  <audio preload="metadata" style="display: none;">
+  <audio preload="metadata" style="display: none;"{{ if $title }} title="{{ $title }}"{{ end }}>
     <source src="{{ $src }}" type="audio/mpeg">
     <source src="{{ $src }}" type="audio/wav">
     <source src="{{ $src }}" type="audio/ogg">
@@ -306,6 +307,17 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 生成波形
     generateWaveform(waveform);
+    
+    // 设置媒体会话元数据（用于iPhone等设备的播放器显示）
+    const title = audio.getAttribute('title');
+    if (title && 'mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: title,
+        artist: '',
+        album: '',
+        artwork: []
+      });
+    }
     
     // 音频元数据加载完成后显示总时长
     audio.addEventListener('loadedmetadata', function() {
