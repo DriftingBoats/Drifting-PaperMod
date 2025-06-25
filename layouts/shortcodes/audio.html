@@ -1,0 +1,360 @@
+{{ $src := .Get "src" }}
+{{ $id := printf "audio-%d" now.Unix }}
+
+<div class="threads-audio-player" id="{{ $id }}">
+  <style>
+    .threads-audio-player {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f8f9fa;
+      border: 1px solid rgba(0, 0, 0, 0.03);
+      border-radius: 16px;
+      padding: 10px 14px;
+      margin: 12px 0;
+      width: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+    
+
+    
+    .dark .threads-audio-player {
+      background: #2a2b2e;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    }
+    
+
+    
+    .threads-play-button {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #6c757d;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .threads-play-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .threads-play-button:hover {
+      background: #5a6268;
+      transform: scale(1.05);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+    
+    .threads-play-button:hover::before {
+      opacity: 1;
+    }
+    
+    .threads-play-button:active {
+      transform: scale(0.98);
+    }
+    
+    .threads-play-button svg {
+      width: 15px;
+      height: 15px;
+      fill: white;
+      margin-left: 1px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .threads-play-button .pause-icon {
+      margin-left: 0;
+    }
+    
+    .dark .threads-play-button {
+      background: #495057;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+    
+    .dark .threads-play-button:hover {
+      background: #3d4449;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    }
+    
+    .threads-waveform {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      cursor: pointer;
+      height: 36px;
+      overflow: hidden;
+      padding: 0 4px;
+      min-width: 0;
+    }
+    
+    .threads-waveform-bar {
+      width: 3px;
+      background: rgba(0, 0, 0, 0.12);
+      border-radius: 2px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      min-height: 6px;
+      position: relative;
+    }
+    
+    .threads-waveform-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #6c757d;
+      border-radius: 2px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .threads-waveform-bar.active::after {
+      opacity: 1;
+    }
+    
+    .threads-waveform-bar:hover {
+      background: rgba(0, 0, 0, 0.16);
+    }
+    
+    .dark .threads-waveform-bar {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .dark .threads-waveform-bar:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .threads-audio-player.playing .threads-waveform-bar {
+      animation: waveAnimation 1.5s ease-in-out infinite;
+    }
+    
+    .threads-time {
+      font-size: 11px;
+      color: #5f6368;
+      font-weight: 500;
+      white-space: nowrap;
+      min-width: 50px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.3px;
+    }
+    
+    .threads-time .time-separator {
+      margin: 0 1px;
+      opacity: 0.6;
+    }
+    
+    .dark .threads-time {
+      color: #9aa0a6;
+    }
+    
+    @keyframes waveAnimation {
+      0%, 100% { 
+        transform: scaleY(1);
+        opacity: 0.7;
+      }
+      50% { 
+        transform: scaleY(1.8);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes pulseGlow {
+      0%, 100% {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+      50% {
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+      }
+    }
+    
+    .threads-audio-player.playing .threads-play-button {
+      animation: pulseGlow 2s ease-in-out infinite;
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 480px) {
+      .threads-audio-player {
+        width: 100%;
+        padding: 8px 12px;
+        gap: 8px;
+      }
+      
+      .threads-play-button {
+        width: 32px;
+        height: 32px;
+      }
+      
+      .threads-play-button svg {
+        width: 14px;
+        height: 14px;
+      }
+      
+      .threads-time {
+        font-size: 10px;
+        min-width: 45px;
+      }
+    }
+    
+
+  </style>
+  
+  <audio preload="metadata" style="display: none;">
+    <source src="{{ $src }}" type="audio/mpeg">
+    <source src="{{ $src }}" type="audio/wav">
+    <source src="{{ $src }}" type="audio/ogg">
+    您的浏览器不支持音频播放。
+  </audio>
+  
+  <button class="threads-play-button" onclick="togglePlay('{{ $id }}')">
+    <svg class="play-icon" viewBox="0 0 24 24">
+      <path d="M8 5v14l11-7z"/>
+    </svg>
+    <svg class="pause-icon" viewBox="0 0 24 24" style="display: none;">
+      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+    </svg>
+  </button>
+  
+  <div class="threads-waveform" onclick="seekTo(event, '{{ $id }}')">
+    <!-- 波形条将通过JavaScript生成 -->
+  </div>
+  
+  <div class="threads-time">
+    <span class="current-time">0:00</span><span class="time-separator" style="display: none;">/</span><span class="total-time" style="display: none;">0:00</span>
+  </div>
+</div>
+
+<script>
+function togglePlay(id) {
+  const player = document.getElementById(id);
+  const audio = player.querySelector('audio');
+  const playIcon = player.querySelector('.play-icon');
+  const pauseIcon = player.querySelector('.pause-icon');
+  
+  if (audio.paused) {
+    audio.play();
+    playIcon.style.display = 'none';
+    pauseIcon.style.display = 'block';
+    player.classList.add('playing');
+  } else {
+    audio.pause();
+    playIcon.style.display = 'block';
+    pauseIcon.style.display = 'none';
+    player.classList.remove('playing');
+  }
+}
+
+function formatTime(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
+function seekTo(event, id) {
+  const player = document.getElementById(id);
+  const audio = player.querySelector('audio');
+  const waveform = player.querySelector('.threads-waveform');
+  const rect = waveform.getBoundingClientRect();
+  const percent = (event.clientX - rect.left) / rect.width;
+  audio.currentTime = percent * audio.duration;
+}
+
+function generateWaveform(container, barCount = 28) {
+  container.innerHTML = '';
+  for (let i = 0; i < barCount; i++) {
+    const bar = document.createElement('div');
+    bar.className = 'threads-waveform-bar';
+    // 生成随机高度模拟波形
+    const height = Math.random() * 18 + 6;
+    bar.style.height = height + 'px';
+    bar.style.animationDelay = (i * 0.1) + 's';
+    container.appendChild(bar);
+  }
+}
+
+// 初始化音频播放器
+document.addEventListener('DOMContentLoaded', function() {
+  const players = document.querySelectorAll('.threads-audio-player');
+  
+  players.forEach(player => {
+    const audio = player.querySelector('audio');
+    const waveform = player.querySelector('.threads-waveform');
+    const currentTimeSpan = player.querySelector('.current-time');
+    const totalTimeSpan = player.querySelector('.total-time');
+    
+    // 生成波形
+    generateWaveform(waveform);
+    
+    // 音频元数据加载完成后显示总时长
+    audio.addEventListener('loadedmetadata', function() {
+      if (audio.duration && !isNaN(audio.duration) && audio.duration !== Infinity) {
+        totalTimeSpan.textContent = formatTime(audio.duration);
+        totalTimeSpan.style.display = 'inline';
+        player.querySelector('.time-separator').style.display = 'inline';
+      }
+    });
+    
+    // 备用方案：监听canplaythrough事件
+    audio.addEventListener('canplaythrough', function() {
+      if (audio.duration && !isNaN(audio.duration) && audio.duration !== Infinity && totalTimeSpan.style.display === 'none') {
+        totalTimeSpan.textContent = formatTime(audio.duration);
+        totalTimeSpan.style.display = 'inline';
+        player.querySelector('.time-separator').style.display = 'inline';
+      }
+    });
+    
+    // 更新进度和激活波形条
+    audio.addEventListener('timeupdate', function() {
+      if (audio.duration) {
+        const percent = audio.currentTime / audio.duration;
+        currentTimeSpan.textContent = formatTime(audio.currentTime);
+        
+        // 更新活跃的波形条
+        const bars = waveform.querySelectorAll('.threads-waveform-bar');
+        bars.forEach((bar, index) => {
+          if (index / bars.length <= percent) {
+            bar.classList.add('active');
+          } else {
+            bar.classList.remove('active');
+          }
+        });
+      }
+    });
+    
+    // 播放结束重置
+    audio.addEventListener('ended', function() {
+      const playIcon = player.querySelector('.play-icon');
+      const pauseIcon = player.querySelector('.pause-icon');
+      playIcon.style.display = 'block';
+      pauseIcon.style.display = 'none';
+      player.classList.remove('playing');
+      currentTimeSpan.textContent = '0:00';
+      
+      // 重置波形条
+      const bars = waveform.querySelectorAll('.threads-waveform-bar');
+      bars.forEach(bar => bar.classList.remove('active'));
+    });
+  });
+});
+</script>
