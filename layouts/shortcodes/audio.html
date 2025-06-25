@@ -224,6 +224,7 @@
     <source src="{{ $src }}" type="audio/mpeg">
     <source src="{{ $src }}" type="audio/wav">
     <source src="{{ $src }}" type="audio/ogg">
+    <source src="{{ $src }}" type="audio/flac">
     您的浏览器不支持音频播放。
   </audio>
   
@@ -280,7 +281,7 @@ function seekTo(event, id) {
   audio.currentTime = percent * audio.duration;
 }
 
-function generateWaveform(container, barCount = 28) {
+function generateWaveform(container, barCount = 80) {
   container.innerHTML = '';
   for (let i = 0; i < barCount; i++) {
     const bar = document.createElement('div');
