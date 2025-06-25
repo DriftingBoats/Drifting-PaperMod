@@ -1,28 +1,33 @@
-/* ====== 浅色模式VSCode风格 ====== */
+/* ====== 浅色模式优化风格 ====== */
 :root {
-    --code-bg: #ffffff;
-    --code-text: #000000;
-    --code-border: #e0e0e0;
-    --code-accent: #3b82f6;
-    --code-btn-bg: rgba(255, 255, 255, 0.95);
-    --code-btn-border: rgba(0, 0, 0, 0.1);
-    --code-btn-text: #1f2328;
-    --code-btn-hover-bg: #f6f8fa;
+    --code-bg: #fafafa;
+    --code-text: #24292f;
+    --code-border: #d1d9e0;
+    --code-accent: #0969da;
+    --code-btn-bg: rgba(255, 255, 255, 0.9);
+    --code-btn-border: rgba(31, 35, 40, 0.15);
+    --code-btn-text: #656d76;
+    --code-btn-hover-bg: #f3f4f6;
     --code-btn-hover-text: #0969da;
-    --code-btn-hover-border: rgba(0, 0, 0, 0.15);
-    --scroll-track: rgba(0, 0, 0, 0.05);
-    --scroll-thumb: rgba(0, 0, 0, 0.2);
+    --code-btn-hover-border: rgba(31, 35, 40, 0.25);
+    --scroll-track: rgba(175, 184, 193, 0.2);
+    --scroll-thumb: rgba(175, 184, 193, 0.5);
     
-    /* 语法高亮 */
-    --code-keyword: #0000ff;
-    --code-string: #a31515;
-    --code-number: #098658;
-    --code-comment: #008000;
-    --code-function: #795e26;
-    --code-type: #267f99;
-    --code-cursor: #000000;  /* 浅色模式黑色光标 */
-    --code-selection-bg: rgba(173, 214, 255, 0.7);  /* 浅蓝选中背景 */
-    --code-selection-text: #000000;
+    /* 优化的语法高亮配色 */
+    --code-keyword: #cf222e;
+    --code-string: #0a3069;
+    --code-number: #0550ae;
+    --code-comment: #6e7781;
+    --code-function: #8250df;
+    --code-type: #953800;
+    --code-cursor: #24292f;
+    --code-selection-bg: rgba(9, 105, 218, 0.12);
+    --code-selection-text: inherit;
+    
+    /* 行内代码样式 */
+    --code-inline-bg: rgba(175, 184, 193, 0.2);
+    --code-inline-text: #cf222e;
+    --code-inline-border: rgba(175, 184, 193, 0.3);
 }
 
 .chroma .kd { color: var(--code-keyword); } /* 蓝色关键字 */
@@ -32,61 +37,95 @@
 .chroma .c1 { color: var(--code-comment); } /* 深绿注释 */
 .chroma .nx { color: var(--code-type); } /* 青色标识符 */
 
-/* ====== 深色模式VSCode风格 ====== */
+/* ====== 深色模式优化风格 ====== */
 .dark {
-    --code-bg: #1e1e1e;
-    --code-text: #d4d4d4;
-    --code-border: #3c3c3c;
-    --code-accent: #60a5fa;
-    --code-btn-bg: rgba(31, 35, 40, 0.95);
+    --code-bg: #0d1117;
+    --code-text: #e6edf3;
+    --code-border: #30363d;
+    --code-accent: #58a6ff;
+    --code-btn-bg: rgba(22, 27, 34, 0.9);
     --code-btn-border: rgba(240, 246, 252, 0.1);
-    --code-btn-text: #e6edf3;
-    --code-btn-hover-bg: rgba(48, 54, 61, 0.95);
+    --code-btn-text: #7d8590;
+    --code-btn-hover-bg: #21262d;
     --code-btn-hover-text: #58a6ff;
     --code-btn-hover-border: rgba(240, 246, 252, 0.2);
-    --scroll-track: rgba(255, 255, 255, 0.05);
-    --scroll-thumb: rgba(255, 255, 255, 0.2);
+    --scroll-track: rgba(110, 118, 129, 0.1);
+    --scroll-thumb: rgba(110, 118, 129, 0.4);
     
-    --code-keyword: #569cd6;
-    --code-string: #ce9178;
-    --code-number: #b5cea8;
-    --code-comment: #6a9955;
-    --code-function: #dcdcaa;
-    --code-type: #4ec9b0;
-    --code-cursor: #aeafad;  /* 深色模式浅灰光标 */
-    --code-selection-bg: rgba(38, 79, 120, 0.7);  /* 深蓝选中背景 */
-    --code-selection-text: #ffffff;
+    /* 优化的深色语法高亮 */
+    --code-keyword: #ff7b72;
+    --code-string: #a5d6ff;
+    --code-number: #79c0ff;
+    --code-comment: #8b949e;
+    --code-function: #d2a8ff;
+    --code-type: #ffa657;
+    --code-cursor: #e6edf3;
+    --code-selection-bg: rgba(88, 166, 255, 0.15);
+    --code-selection-text: inherit;
+    
+    /* 深色行内代码样式 */
+    --code-inline-bg: rgba(110, 118, 129, 0.2);
+    --code-inline-text: #ff7b72;
+    --code-inline-border: rgba(110, 118, 129, 0.3);
 }
 
-/* ====== 间距优化 ====== */
+/* ====== 代码块整体样式优化 ====== */
 .post-content pre {
-    padding: 1rem !important;  /* 从1.6rem缩小 */
-    margin: 1.5rem auto !important;  /* 从2.2rem缩小 */
-    line-height: 1.6;  /* 微调行高 */
+    padding: 1.2rem !important;
+    margin: 1.8rem auto !important;
+    line-height: 1.7;
+    border-radius: 8px;
+    border: 1px solid var(--code-border);
+    background: var(--code-bg) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s ease;
+    overflow-x: auto;
+    position: relative;
+}
+
+.post-content pre:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 /* 代码元素间距 */
 .chroma code {
-    padding: 0.2rem 0.3rem !important;  /* 从0.2rem 0.4rem缩小 */
-    margin: -0.1rem 0;  /* 补偿值调整 */
+    padding: 0 !important;
+    margin: 0 !important;
     caret-color: var(--code-cursor) !important;
+    font-family: 'JetBrains Mono', 'Fira Code', Consolas, 'Courier New', monospace;
+    font-size: 0.9em;
+    font-weight: 400;
 }
 
-/* 行号间距优化 */
+/* 行号样式优化 */
 .lnt {
-    padding-right: 1.5rem !important;
-    margin-right: 1.2rem;
-    font-size: 0.9em !important;
-    opacity: 0.8;
+    padding-right: 1.2rem !important;
+    margin-right: 0.8rem;
+    font-size: 0.85em !important;
+    opacity: 0.6;
+    color: var(--code-comment);
+    user-select: none;
+    border-right: 1px solid var(--code-border);
+    padding-left: 0.5rem !important;
 }
 
-/* ====== 配色应用 ====== */
+/* ====== 复制按钮样式优化 ====== */
 .copy-code {
     background: var(--code-btn-bg) !important;
     border: 1px solid var(--code-btn-border) !important;
     color: var(--code-btn-text) !important;
-    backdrop-filter: blur(8px);
-    transition: all 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+    backdrop-filter: blur(10px);
+    border-radius: 6px;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 0.8rem;
+    right: 0.8rem;
+    z-index: 10;
 }
 
 .chroma .k, .chroma .kr, .chroma .kd { color: var(--code-keyword); }
@@ -96,16 +135,24 @@
 .chroma .nf, .chroma .nx { color: var(--code-function); }
 .chroma .nc, .chroma .nt { color: var(--code-type); }
 
-/* 代码样式 */
+/* 行内代码样式优化 */
 .post-content code {
-    margin: unset;
-    padding: .3rem .4rem;
-    line-height: 1.5;
-    background: var(--code-bg);
-    border-radius: .5rem;
+    margin: 0;
+    padding: 0.2em 0.4em;
+    line-height: 1.4;
+    background: var(--code-inline-bg);
+    color: var(--code-inline-text);
+    border: 1px solid var(--code-inline-border);
+    border-radius: 4px;
     font-size: 0.875em;
-    font-family: Consolas, sans-serif;
-    color: var(--primary-hover-color);
+    font-family: 'JetBrains Mono', 'Fira Code', Consolas, 'Courier New', monospace;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+}
+
+.post-content code:hover {
+    background: var(--code-inline-bg);
 }
 
 /* 代码块样式 */
@@ -166,15 +213,20 @@
 }
 
 .copy-code:hover {
-    background: var(--code-btn-hover-bg) !important;
-    color: var(--code-btn-hover-text) !important;
-    border-color: var(--code-btn-hover-border) !important;
-    transform: translateY(-1px);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.copy-code:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dark .copy-code {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .dark .copy-code:hover {
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .chroma .lnt {
@@ -194,9 +246,53 @@
     border-radius: 4px;
 }
 
-/* 新增变量 */
-:root {
-    --code-inline-bg: rgba(175, 184, 193, 0.2);
+/* ====== 代码块滚动条样式优化 ====== */
+.post-content pre::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+}
+
+.post-content pre::-webkit-scrollbar-track {
+    background: var(--scroll-track);
+    border-radius: 4px;
+}
+
+.post-content pre::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb);
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+.post-content pre::-webkit-scrollbar-thumb:hover {
+    background: var(--code-accent);
+}
+
+.post-content pre::-webkit-scrollbar-corner {
+    background: var(--scroll-track);
+}
+
+/* 移动端代码块优化 */
+@media (max-width: 768px) {
+    .post-content pre {
+        margin: 1rem -1rem !important;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        padding: 1rem !important;
+    }
+    
+    .copy-code {
+        top: 0.5rem;
+        right: 0.5rem;
+        padding: 0.3rem 0.5rem;
+        font-size: 0.75rem;
+    }
+    
+    .lnt {
+        padding-left: 0.3rem !important;
+        padding-right: 0.8rem !important;
+        margin-right: 0.5rem;
+    }
 }
 .dark {
     --code-inline-bg: rgba(110, 118, 129, 0.4);
