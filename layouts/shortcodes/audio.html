@@ -281,7 +281,7 @@ function seekTo(event, id) {
   audio.currentTime = percent * audio.duration;
 }
 
-function generateWaveform(container, barCount = 80) {
+function generateWaveform(container, barCount = 60) {
   container.innerHTML = '';
   for (let i = 0; i < barCount; i++) {
     const bar = document.createElement('div');
