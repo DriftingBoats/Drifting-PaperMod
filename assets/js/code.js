@@ -55,13 +55,13 @@ function initCodeCopy() {
                 
                 navigator.clipboard.writeText(codeText).then(() => {
                     const originalHTML = button.innerHTML;
-                    button.innerHTML = '<svg class="pe-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.75.75 0 0 1 1.06-1.06L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/></svg>';
+                    button.innerHTML = '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
                     button.style.color = '#28a745';
                     
                     setTimeout(() => {
                         button.innerHTML = originalHTML;
                         button.style.color = '';
-                    }, 2000);
+                    }, 1000);
                 }).catch(err => {
                     console.error('复制失败:', err);
                 });
