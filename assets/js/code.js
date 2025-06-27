@@ -1,10 +1,10 @@
-// PE代码块复制功能
-function initPECodeCopy() {
-    const copyButtons = document.querySelectorAll('.pe-code-copy-button');
+// 代码块复制功能
+function initCodeCopy() {
+    const copyButtons = document.querySelectorAll('.code-copy-button');
     
     copyButtons.forEach(button => {
         button.addEventListener('click', () => {
-            const codeBlock = button.closest('.pe-code-block-wrap');
+            const codeBlock = button.closest('.code-block-wrap');
             const code = codeBlock.querySelector('pre code');
             
             if (code) {
@@ -70,12 +70,12 @@ function initPECodeCopy() {
     });
 }
 
-// PE代码块折叠功能
-function initPECodeFolding() {
-    const codeDetails = document.querySelectorAll('.pe-code-details');
+// 代码块折叠功能
+function initCodeFolding() {
+    const codeDetails = document.querySelectorAll('.code-details');
     
     codeDetails.forEach(details => {
-        const content = details.querySelector('.pe-code-details-content');
+        const content = details.querySelector('.code-details-content');
         
         // 监听原生details的toggle事件
         details.addEventListener('toggle', () => {
@@ -109,6 +109,6 @@ function initPECodeFolding() {
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
-    initPECodeCopy();
-    initPECodeFolding();
+    initCodeCopy();
+    initCodeFolding();
 });

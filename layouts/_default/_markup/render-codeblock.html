@@ -1,25 +1,29 @@
-{{- $lang := .Type | default "code" -}}
+{{- $lang := .Type -}}
+{{- $validLangs := slice "bash" "sh" "python" "py" "javascript" "js" "typescript" "ts" "go" "java" "c" "cpp" "c++" "rust" "php" "ruby" "swift" "kotlin" "scala" "html" "css" "scss" "sass" "less" "xml" "json" "yaml" "yml" "toml" "sql" "dockerfile" "makefile" "powershell" "ps1" "batch" "cmd" "vim" "lua" "perl" "r" "matlab" "octave" "haskell" "clojure" "erlang" "elixir" "dart" "objective-c" "objc" "assembly" "asm" "fortran" "cobol" "pascal" "ada" "scheme" "lisp" "prolog" "vhdl" "verilog" "systemverilog" "tcl" "awk" "sed" "regex" "diff" "patch" "ini" "conf" "config" "properties" "log" "csv" "tsv" "markdown" "md" "tex" "latex" "bibtex" "graphql" "protobuf" "proto" "thrift" "avro" "nginx" "apache" "htaccess" "crontab" "systemd" "service" "desktop" "gitignore" "gitattributes" "gitconfig" "editorconfig" "eslintrc" "prettierrc" "babelrc" "webpack" "rollup" "vite" "gulp" "grunt" "npm" "yarn" "composer" "cargo" "gemfile" "podfile" "requirements" "pipfile" "setup" "cmake" "meson" "bazel" "scons" "ant" "maven" "gradle" "sbt" "leiningen" "mix" "rebar" "cabal" "stack" "dub" "nimble" "shards" "crystal" "zig" "odin" "v" "nim" "crystal" "red" "rebol" "factor" "forth" "j" "apl" "k" "q" "chapel" "julia" "racket" "chicken" "gambit" "guile" "mit-scheme" "bigloo" "kawa" "jscheme" "sisc" "abcl" "allegro" "ccl" "clisp" "cmucl" "ecl" "gcl" "lispworks" "sbcl" "scl" "corman" "mocl" "mkcl" "clasp" -}}
+{{- if and $lang (in $validLangs $lang) -}}
+    {{- $lang = $lang -}}
+{{- else -}}
+    {{- $lang = "text" -}}
+{{- end -}}
 {{- $title := .Attributes.title | default "" -}}
-{{- $lineNos := .Attributes.lineNos | default true -}}
-{{- $lineNoStart := .Attributes.linenostart | default 1 -}}
 {{- $open := .Attributes.open | default true -}}
 
-<div class="pe-code-block-wrap" data-original-lang="{{ $lang }}">
-    <details class="pe-code-details"{{- if $open }} open{{- end }}>
-        <summary class="pe-code-details-summary">
-            <div class="pe-code-block-header">
-                <div class="pe-code-block-header-left">
-                    <svg class="pe-code-details-icon pe-icon" viewBox="0 0 16 16" fill="currentColor">
+<div class="code-block-wrap" data-original-lang="{{ $lang }}">
+    <details class="code-details"{{- if $open }} open{{- end }}>
+        <summary class="code-details-summary">
+            <div class="code-block-header">
+                <div class="code-block-header-left">
+                    <svg class="code-details-icon icon" viewBox="0 0 16 16" fill="currentColor">
                         <path d="M6.22 3.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 0 1 0-1.06Z"/>
                     </svg>
-                    <span class="pe-code-block-lang" data-lang="{{ $lang }}">{{ $lang }}</span>
+                    <span class="code-block-lang" data-lang="{{ $lang }}">{{ $lang }}</span>
                     {{- if $title -}}
-                    <span class="pe-code-block-title">{{ $title }}</span>
+                    <span class="code-block-title">{{ $title }}</span>
                     {{- end -}}
                 </div>
-                <div class="pe-code-block-header-right">
-                    <button class="pe-code-copy-button" type="button">
-                        <svg class="pe-icon" viewBox="0 0 16 16" fill="currentColor">
+                <div class="code-block-header-right">
+                    <button class="code-copy-button" type="button">
+                        <svg class="icon" viewBox="0 0 16 16" fill="currentColor">
                             <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"/>
                             <path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/>
                         </svg>
@@ -27,9 +31,8 @@
                 </div>
             </div>
         </summary>
-        <div class="pe-code-details-content">
-            {{- $lineNumbersInTable := .Attributes.lineNumbersInTable | default false -}}
-            {{- highlight .Inner $lang (dict "lineNos" $lineNos "lineNumbersInTable" $lineNumbersInTable "linenostart" $lineNoStart) -}}
+        <div class="code-details-content">
+            {{- highlight .Inner .Type .Options -}}
         </div>
     </details>
 </div>
@@ -185,11 +188,11 @@
 
     // 处理所有代码块
     document.addEventListener('DOMContentLoaded', function() {
-        const codeBlocks = document.querySelectorAll('.pe-code-block-wrap');
+        const codeBlocks = document.querySelectorAll('.code-block-wrap');
         
         codeBlocks.forEach(function(block) {
             const originalLang = block.getAttribute('data-original-lang');
-            const langSpan = block.querySelector('.pe-code-block-lang');
+            const langSpan = block.querySelector('.code-block-lang');
             const codeElement = block.querySelector('pre code');
             
             if (originalLang === 'code' && codeElement && langSpan) {
