@@ -67,8 +67,15 @@
                 /fmt\.(Print|Sprintf)|\.(go)$/
             ],
             rust: [
-                /\b(fn|let|mut|struct|enum|impl|trait|use|mod)/,
-                /\b(match|if let|while let|for|loop)/,
+                /\bfn\s+\w+/,  // 函数定义
+                /\blet\s+(mut\s+)?\w+\s*=/,  // 变量定义
+                /\bstruct\s+\w+/,  // 结构体定义
+                /\benum\s+\w+/,  // 枚举定义
+                /\bimpl\s+(\w+\s+for\s+)?\w+/,  // impl 块
+                /\btrait\s+\w+/,  // trait 定义
+                /\buse\s+[\w:]+;/,  // use 语句
+                /\bmod\s+\w+;/,  // 模块声明
+                /\b(match|if let|while let|for|loop)\b/,
                 /println!|\.(rs)$/
             ],
             cpp: [
@@ -146,7 +153,11 @@
             ],
             bash: [
                 /^#!/,
-                /\b(echo|grep|sed|awk|cat|ls|cd|mkdir|rm|cp|mv)/,
+                /\b(echo|grep|sed|awk|cat|ls|cd|mkdir|rm|cp|mv|chmod|chown|find|which|whereis)/,
+                /\b(brew|apt|yum|dnf|pacman|pip|npm|yarn|cargo|gem|composer)/,  // 包管理器
+                /\b(install|update|upgrade|remove|uninstall|search|info|list)/,  // 包管理器操作
+                /\b(git|docker|kubectl|ssh|scp|rsync|curl|wget|tar|zip|unzip)/,  // 常用工具
+                /--[a-zA-Z-]+|^-[a-zA-Z]+/,  // 命令行参数
                 /\.(sh|bash)$/,
                 /\$\{?\w+\}?/
             ],
