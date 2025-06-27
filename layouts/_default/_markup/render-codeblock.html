@@ -1,6 +1,7 @@
 {{- $lang := .Type | default "code" -}}
 {{- $title := .Attributes.title | default "" -}}
 {{- $lineNos := .Attributes.lineNos | default true -}}
+{{- $lineNoStart := .Attributes.linenostart | default 1 -}}
 {{- $open := .Attributes.open | default true -}}
 
 <div class="pe-code-block-wrap" data-original-lang="{{ $lang }}">
@@ -28,7 +29,7 @@
         </summary>
         <div class="pe-code-details-content">
             {{- $lineNumbersInTable := .Attributes.lineNumbersInTable | default false -}}
-            {{- highlight .Inner $lang (dict "lineNos" $lineNos "lineNumbersInTable" $lineNumbersInTable) -}}
+            {{- highlight .Inner $lang (dict "lineNos" $lineNos "lineNumbersInTable" $lineNumbersInTable "linenostart" $lineNoStart) -}}
         </div>
     </details>
 </div>
@@ -178,8 +179,8 @@
             }
         }
 
-        // 如果没有明确的匹配，返回 'text'
-        return bestScore > 0 ? bestLang : 'text';
+        // 如果没有明确的匹配，返回 'plaintext'
+        return bestScore > 0 ? bestLang : 'plaintext';
     }
 
     // 处理所有代码块
