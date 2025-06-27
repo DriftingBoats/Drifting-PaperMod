@@ -66,8 +66,10 @@ body:not(.dark) #sun {
 }
 
 #menu .active {
-    font-weight: 500;
-    border-bottom: 2px solid currentColor;
+    font-weight: 700; /* 加粗 */
+    border-bottom: none; /* 移除下划线 */
+    color: var(--primary); /* 加深颜色 */
+    transform: none; /* 移除放大效果 */
 }
 
 .lang-switch li,
