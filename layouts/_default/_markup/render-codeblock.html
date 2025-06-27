@@ -1,0 +1,206 @@
+{{- $lang := .Type | default "code" -}}
+{{- $title := .Attributes.title | default "" -}}
+{{- $lineNos := .Attributes.lineNos | default true -}}
+{{- $open := .Attributes.open | default true -}}
+
+<div class="pe-code-block-wrap" data-original-lang="{{ $lang }}">
+    <details class="pe-code-details"{{- if $open }} open{{- end }}>
+        <summary class="pe-code-details-summary">
+            <div class="pe-code-block-header">
+                <div class="pe-code-block-header-left">
+                    <svg class="pe-code-details-icon pe-icon" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M6.22 3.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 0 1 0-1.06Z"/>
+                    </svg>
+                    <span class="pe-code-block-lang" data-lang="{{ $lang }}">{{ $lang }}</span>
+                    {{- if $title -}}
+                    <span class="pe-code-block-title">{{ $title }}</span>
+                    {{- end -}}
+                </div>
+                <div class="pe-code-block-header-right">
+                    <button class="pe-code-copy-button" type="button">
+                        <svg class="pe-icon" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"/>
+                            <path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </summary>
+        <div class="pe-code-details-content">
+            {{- $lineNumbersInTable := .Attributes.lineNumbersInTable | default false -}}
+            {{- highlight .Inner $lang (dict "lineNos" $lineNos "lineNumbersInTable" $lineNumbersInTable) -}}
+        </div>
+    </details>
+</div>
+
+<script>
+(function() {
+    // 语言检测函数
+    function detectLanguage(code) {
+        const patterns = {
+            javascript: [
+                /\b(function|const|let|var|=>|console\.log|document\.|window\.|jQuery|\$\()/,
+                /\b(async|await|Promise|setTimeout|setInterval)/,
+                /\.(js|jsx)$/,
+                /import\s+.*\s+from\s+['"].*['"]/
+            ],
+            python: [
+                /\b(def|import|from|class|if __name__|print\(|range\()/,
+                /\b(elif|lambda|yield|with|as|try|except|finally)/,
+                /\.(py|pyw)$/,
+                /#.*$/m
+            ],
+            java: [
+                /\b(public|private|protected|class|interface|extends|implements)/,
+                /\b(static|final|abstract|synchronized|volatile)/,
+                /System\.out\.println|String\[\]|public static void main/,
+                /\.(java)$/
+            ],
+            go: [
+                /\b(package|import|func|var|const|type|struct|interface)/,
+                /\b(go|defer|chan|select|range)/,
+                /fmt\.(Print|Sprintf)|\.(go)$/
+            ],
+            rust: [
+                /\b(fn|let|mut|struct|enum|impl|trait|use|mod)/,
+                /\b(match|if let|while let|for|loop)/,
+                /println!|\.(rs)$/
+            ],
+            cpp: [
+                /\b(#include|using namespace|std::|cout|cin|endl)/,
+                /\b(class|struct|template|typename|virtual|override)/,
+                /\.(cpp|cc|cxx|h|hpp)$/
+            ],
+            c: [
+                /\b(#include|printf|scanf|malloc|free|sizeof)/,
+                /\b(int main|void|char|int|float|double)/,
+                /\.(c|h)$/
+            ],
+            php: [
+                /<\?php|\$\w+|echo|print|function|class|extends/,
+                /\b(public|private|protected|static|final|abstract)/,
+                /\.(php|phtml)$/
+            ],
+            ruby: [
+                /\b(def|class|module|require|include|puts|print)/,
+                /\b(if|elsif|else|unless|case|when|while|until|for|in)/,
+                /\.(rb|ruby)$/
+            ],
+            swift: [
+                /\b(func|var|let|class|struct|enum|protocol|extension)/,
+                /\b(import|if|else|for|while|switch|case|default)/,
+                /\.(swift)$/
+            ],
+            kotlin: [
+                /\b(fun|val|var|class|object|interface|data class)/,
+                /\b(if|else|when|for|while|try|catch|finally)/,
+                /\.(kt|kts)$/
+            ],
+            typescript: [
+                /\b(interface|type|enum|namespace|declare|export)/,
+                /\b(function|const|let|var|=>|console\.log)/,
+                /\.(ts|tsx)$/,
+                /import\s+.*\s+from\s+['"].*['"]/
+            ],
+            css: [
+                /\{[^}]*\}/,
+                /\b(color|background|margin|padding|border|font|display)/,
+                /\.(css|scss|sass|less)$/,
+                /@(media|import|keyframes|font-face)/
+            ],
+            html: [
+                /<\/?[a-zA-Z][^>]*>/,
+                /\b(div|span|p|a|img|ul|li|table|tr|td)/,
+                /\.(html|htm|xhtml)$/,
+                /<!DOCTYPE|<html|<head|<body/
+            ],
+            sql: [
+                /\b(SELECT|FROM|WHERE|INSERT|UPDATE|DELETE|CREATE|ALTER|DROP)/i,
+                /\b(JOIN|INNER|LEFT|RIGHT|OUTER|ON|GROUP BY|ORDER BY|HAVING)/i,
+                /\.(sql)$/
+            ],
+            json: [
+                /^\s*\{[\s\S]*\}\s*$/,
+                /^\s*\[[\s\S]*\]\s*$/,
+                /"\w+"\s*:/,
+                /\.(json)$/
+            ],
+            yaml: [
+                /^\s*\w+:\s*$/m,
+                /^\s*-\s+/m,
+                /\.(yaml|yml)$/
+            ],
+            xml: [
+                /<\?xml|<\w+[^>]*>.*<\/\w+>/,
+                /\.(xml|xsd|xsl)$/
+            ],
+            bash: [
+                /^#!/,
+                /\b(echo|grep|sed|awk|cat|ls|cd|mkdir|rm|cp|mv)/,
+                /\.(sh|bash)$/,
+                /\$\{?\w+\}?/
+            ],
+            powershell: [
+                /\$\w+|Get-\w+|Set-\w+|New-\w+|Remove-\w+/,
+                /\b(param|function|if|else|foreach|while|try|catch)/,
+                /\.(ps1|psm1)$/
+            ],
+            dockerfile: [
+                /\b(FROM|RUN|COPY|ADD|WORKDIR|EXPOSE|CMD|ENTRYPOINT)/,
+                /\.(dockerfile|Dockerfile)$/
+            ],
+            markdown: [
+                /^#{1,6}\s+/m,
+                /\*\*.*\*\*|\*.*\*/,
+                /\[.*\]\(.*\)/,
+                /\.(md|markdown)$/
+            ]
+        };
+
+        // 计算每种语言的匹配分数
+        const scores = {};
+        for (const [lang, langPatterns] of Object.entries(patterns)) {
+            scores[lang] = 0;
+            for (const pattern of langPatterns) {
+                if (pattern.test(code)) {
+                    scores[lang]++;
+                }
+            }
+        }
+
+        // 找到得分最高的语言
+        let bestLang = 'code';
+        let bestScore = 0;
+        for (const [lang, score] of Object.entries(scores)) {
+            if (score > bestScore) {
+                bestScore = score;
+                bestLang = lang;
+            }
+        }
+
+        // 如果没有明确的匹配，返回 'code'
+        return bestScore > 0 ? bestLang : 'code';
+    }
+
+    // 处理所有代码块
+    document.addEventListener('DOMContentLoaded', function() {
+        const codeBlocks = document.querySelectorAll('.pe-code-block-wrap');
+        
+        codeBlocks.forEach(function(block) {
+            const originalLang = block.getAttribute('data-original-lang');
+            const langSpan = block.querySelector('.pe-code-block-lang');
+            const codeElement = block.querySelector('pre code');
+            
+            if (originalLang === 'code' && codeElement && langSpan) {
+                const codeText = codeElement.textContent || codeElement.innerText;
+                const detectedLang = detectLanguage(codeText);
+                
+                if (detectedLang !== 'code') {
+                    langSpan.textContent = detectedLang;
+                    langSpan.setAttribute('data-lang', detectedLang);
+                }
+            }
+        });
+    });
+})();
+</script>
