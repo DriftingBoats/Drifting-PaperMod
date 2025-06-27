@@ -178,8 +178,8 @@
             }
         }
 
-        // 如果没有明确的匹配，返回 'code'
-        return bestScore > 0 ? bestLang : 'code';
+        // 如果没有明确的匹配，返回 'text'
+        return bestScore > 0 ? bestLang : 'text';
     }
 
     // 处理所有代码块
@@ -198,6 +198,10 @@
                 if (detectedLang !== 'code') {
                     langSpan.textContent = detectedLang;
                     langSpan.setAttribute('data-lang', detectedLang);
+                } else {
+                    // 如果检测不出语言，显示为 Text
+                    langSpan.textContent = 'Text';
+                    langSpan.setAttribute('data-lang', 'text');
                 }
             }
         });
