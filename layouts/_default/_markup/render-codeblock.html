@@ -1,9 +1,10 @@
 {{- $lang := .Type -}}
 {{- $validLangs := slice "bash" "sh" "python" "py" "javascript" "js" "typescript" "ts" "go" "java" "c" "cpp" "c++" "rust" "php" "ruby" "swift" "kotlin" "scala" "html" "css" "scss" "sass" "less" "xml" "json" "yaml" "yml" "toml" "sql" "dockerfile" "makefile" "powershell" "ps1" "batch" "cmd" "vim" "lua" "perl" "r" "matlab" "octave" "haskell" "clojure" "erlang" "elixir" "dart" "objective-c" "objc" "assembly" "asm" "fortran" "cobol" "pascal" "ada" "scheme" "lisp" "prolog" "vhdl" "verilog" "systemverilog" "tcl" "awk" "sed" "regex" "diff" "patch" "ini" "conf" "config" "properties" "log" "csv" "tsv" "markdown" "md" "tex" "latex" "bibtex" "graphql" "protobuf" "proto" "thrift" "avro" "nginx" "apache" "htaccess" "crontab" "systemd" "service" "desktop" "gitignore" "gitattributes" "gitconfig" "editorconfig" "eslintrc" "prettierrc" "babelrc" "webpack" "rollup" "vite" "gulp" "grunt" "npm" "yarn" "composer" "cargo" "gemfile" "podfile" "requirements" "pipfile" "setup" "cmake" "meson" "bazel" "scons" "ant" "maven" "gradle" "sbt" "leiningen" "mix" "rebar" "cabal" "stack" "dub" "nimble" "shards" "crystal" "zig" "odin" "v" "nim" "crystal" "red" "rebol" "factor" "forth" "j" "apl" "k" "q" "chapel" "julia" "racket" "chicken" "gambit" "guile" "mit-scheme" "bigloo" "kawa" "jscheme" "sisc" "abcl" "allegro" "ccl" "clisp" "cmucl" "ecl" "gcl" "lispworks" "sbcl" "scl" "corman" "mocl" "mkcl" "clasp" -}}
-{{- if and $lang (in $validLangs $lang) -}}
-    {{- $lang = $lang -}}
-{{- else -}}
+{{- /* 保留 Hugo 的 guessSyntax 结果，只有当语言为空或为 'code' 时才使用 'text' */ -}}
+{{- if not $lang -}}
     {{- $lang = "text" -}}
+{{- else if eq $lang "code" -}}
+    {{- $lang = "code" -}}
 {{- end -}}
 {{- $title := .Attributes.title | default "" -}}
 {{- $open := .Attributes.open | default true -}}
@@ -86,9 +87,13 @@
                 /\.(php|phtml)$/
             ],
             ruby: [
-                /\b(def|class|module|require|include|puts|print)/,
-                /\b(if|elsif|else|unless|case|when|while|until|for|in)/,
-                /\.(rb|ruby)$/
+                /\bdef\s+\w+/,  // 函数定义
+                /\bclass\s+\w+/,  // 类定义
+                /\bmodule\s+\w+/,  // 模块定义
+                /\b(require|include)\s+['"]/,  // require/include 语句
+                /\b(puts|print)\s*[\("']/,  // puts/print 调用
+                /\.(rb|ruby)$/,
+                /\bend\s*$/m  // Ruby 的 end 关键词
             ],
             swift: [
                 /\b(func|var|let|class|struct|enum|protocol|extension)/,
@@ -107,16 +112,17 @@
                 /import\s+.*\s+from\s+['"].*['"]/
             ],
             css: [
-                /\{[^}]*\}/,
-                /\b(color|background|margin|padding|border|font|display)/,
+                /[a-zA-Z-]+\s*\{[^}]*\}/,  // CSS 选择器 + 大括号
+                /\b(color|background|margin|padding|border|font|display)\s*:/,  // CSS 属性
                 /\.(css|scss|sass|less)$/,
-                /@(media|import|keyframes|font-face)/
+                /@(media|import|keyframes|font-face)/,
+                /[#.]?[a-zA-Z][a-zA-Z0-9-_]*\s*\{/  // 更严格的 CSS 选择器匹配
             ],
             html: [
                 /<\/?[a-zA-Z][^>]*>/,
-                /\b(div|span|p|a|img|ul|li|table|tr|td)/,
-                /\.(html|htm|xhtml)$/,
-                /<!DOCTYPE|<html|<head|<body/
+                /\b(div|span|p|a|img|ul|li|table|tr|td)\b/,
+                /<!DOCTYPE|<html|<head|<body/,
+                /<[a-zA-Z][^>]*>[\s\S]*<\/[a-zA-Z]+>/  // 完整的 HTML 标签对
             ],
             sql: [
                 /\b(SELECT|FROM|WHERE|INSERT|UPDATE|DELETE|CREATE|ALTER|DROP)/i,
@@ -158,12 +164,40 @@
                 /\*\*.*\*\*|\*.*\*/,
                 /\[.*\]\(.*\)/,
                 /\.(md|markdown)$/
+            ],
+            hugo: [
+                /\{\{<\s*\w+.*>\}\}/,  // Hugo shortcode
+                /\{\{%\s*\w+.*%\}\}/,  // Hugo template
+                /\{\{\s*\.\w+/,       // Hugo variables
+                /\{\{-?\s*(if|range|with|define|block|end)/  // Hugo control structures
+            ],
+            filepath: [
+                /^[a-zA-Z]?:?[\/\\]?[\w\-\.\s\/\\]+\.[a-zA-Z0-9]+$/m,  // 文件路径
+                /^[\w\-\.]+[\/\\][\w\-\.\s\/\\]*$/m,  // 相对路径
+                /^\s*[├└│├─└─\s]*[\w\-\.]+[\/\\]?$/m,  // 目录树结构
+                /^\s*[├└│├─└─\s]*[\w\-\.]+\.[a-zA-Z0-9]+$/m,  // 目录树中的文件
+                /layouts\/[\w\/\-\.]+/,  // Hugo layouts 路径
+                /static\/[\w\/\-\.]+/,   // Hugo static 路径
+                /content\/[\w\/\-\.]+/   // Hugo content 路径
             ]
         };
 
-        // 计算每种语言的匹配分数
+        // 优先检测特殊格式（文件路径、Hugo shortcode 等）
+        const priorityLangs = ['filepath', 'hugo'];
+        for (const lang of priorityLangs) {
+            if (patterns[lang]) {
+                for (const pattern of patterns[lang]) {
+                    if (pattern.test(code)) {
+                        return lang === 'filepath' ? 'text' : lang;
+                    }
+                }
+            }
+        }
+
+        // 计算其他语言的匹配分数
         const scores = {};
         for (const [lang, langPatterns] of Object.entries(patterns)) {
+            if (priorityLangs.includes(lang)) continue; // 跳过已优先检测的语言
             scores[lang] = 0;
             for (const pattern of langPatterns) {
                 if (pattern.test(code)) {
@@ -195,11 +229,11 @@
             const langSpan = block.querySelector('.code-block-lang');
             const codeElement = block.querySelector('pre code');
             
-            if (originalLang === 'code' && codeElement && langSpan) {
+            if ((originalLang === 'code' || originalLang === 'text') && codeElement && langSpan) {
                 const codeText = codeElement.textContent || codeElement.innerText;
                 const detectedLang = detectLanguage(codeText);
                 
-                if (detectedLang !== 'code') {
+                if (detectedLang !== 'code' && detectedLang !== 'text') {
                     langSpan.textContent = detectedLang;
                     langSpan.setAttribute('data-lang', detectedLang);
                 } else {
