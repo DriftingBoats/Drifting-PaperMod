@@ -2,10 +2,11 @@
 :root {
     /* 基础颜色 */
     --code-bg: #f8f9fa;
-    --code-text: #24292e;
-    --code-border: #e1e4e8;
-    --code-header-bg: #f1f3f4;
-    --code-header-text: #586069;
+    --code-text: #24292f;
+    --code-border: rgba(0, 0, 0, 0.03);
+    --code-header-bg: #ffffff;
+    --code-header-text: #57606a;
+    --code-header-border: rgba(0, 0, 0, 0.06);
     
     /* 语法高亮颜色 */
     --code-keyword: #d73a49;
@@ -35,11 +36,12 @@
 /* 深色模式样式变量 */
 .dark {
     /* 基础颜色 */
-    --code-bg: #161b22;
+    --code-bg: #2a2b2e;
     --code-text: #e6edf3;
-    --code-border: #30363d;
-    --code-header-bg: #21262d;
-    --code-header-text: #8b949e;
+    --code-border: rgba(255, 255, 255, 0.04);
+    --code-header-bg: #1e1f22;
+    --code-header-text: #d4d4d4;
+    --code-header-border: rgba(255, 255, 255, 0.08);
     
     /* 语法高亮颜色 */
     --code-keyword: #ff7b72;
@@ -61,8 +63,8 @@
     --code-btn-hover-bg: #30363d;
     --code-btn-hover-text: #e6edf3;
     
-    /* 滚动�?*/
-    --scroll-track: #21262d;
+    /* 滚动条 */
+    --scroll-track: #21262d00;
     --scroll-thumb: #484f58;
 }
 
@@ -73,7 +75,7 @@
     background: var(--code-inline-bg);
     color: var(--code-inline-text);
     border: 1px solid var(--code-inline-border);
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 0.875em;
     font-family: 'JetBrains Mono', 'Fira Code', Consolas, 'Courier New', monospace;
     font-weight: 500;
@@ -88,7 +90,7 @@
     border-radius: 8px;
     overflow: hidden;
     background: var(--code-bg);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     transition: box-shadow 0.3s ease;
 }
 
@@ -109,12 +111,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.75rem 1rem;
+    padding: 0.6rem 1rem;
     background: var(--code-header-bg);
     border-bottom: 1px solid var(--code-border);
     font-size: 0.875rem;
     color: var(--code-header-text);
-    min-height: 2.5rem;
+    min-height: 2.2rem;
 }
 
 .code-block-header-left {
@@ -132,7 +134,7 @@
     background: rgba(22, 160, 133, 0.08);
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     border: 1px solid rgba(22, 160, 133, 0.15);
     transition: all 0.2s ease;
 }
@@ -141,6 +143,18 @@
     color: #1dd1a1;
     background: rgba(29, 209, 161, 0.1);
     border: 1px solid rgba(29, 209, 161, 0.2);
+}
+
+.code-block-lang[data-lang="text"] {
+    color: rgba(193, 199, 205, 1);
+    background: rgba(193, 199, 205, 0.2);
+    border-color: rgba(193, 199, 205, 0.4)
+}
+
+.dark .code-block-lang[data-lang="text"] {
+    color: rgba(82, 88, 98, 1);
+    background: rgba(82, 88, 98, 0.2);
+    border-color: rgba(82, 88, 98, 0.4)
 }
 
 /* ====== 语言特定颜色 ====== */
@@ -636,7 +650,7 @@
   border-color: rgba(110, 76, 19, 0.4);
 }
 
-/* 通用代码块（无语言或未识别语言�?/
+/* 通用代码块（无语言或未识别语言）/
 .code-block-lang[data-lang="code"],
 .code-block-lang[data-lang="text"],
 .code-block-lang[data-lang=""] {
@@ -865,23 +879,31 @@
 }
 
 .post-content pre::-webkit-scrollbar {
-    height: 8px;
-    width: 8px;
+    height: 6px;
+    width: 6px;
 }
 
 .post-content pre::-webkit-scrollbar-track {
-    background: var(--scroll-track);
-    border-radius: 4px;
+    background: transparent;
+    border-radius: 3px;
 }
 
 .post-content pre::-webkit-scrollbar-thumb {
-    background: var(--scroll-thumb);
-    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
     transition: background 0.2s ease;
 }
 
 .post-content pre::-webkit-scrollbar-thumb:hover {
-    background: var(--code-header-text);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.dark .post-content pre::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.dark .post-content pre::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
 }
 
 /* ====== SVG 图标支持 ====== */
