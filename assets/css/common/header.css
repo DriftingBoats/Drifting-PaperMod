@@ -23,7 +23,7 @@
 }
 
 .logo a {
-    font-size: 24px;
+    font-size: 32px; /* 从24px增加到28px */
     font-weight: 700;
 }
 
@@ -33,7 +33,8 @@
     pointer-events: none;
     transform: translate(0, -10%);
     border-radius: 6px;
-    margin-inline-end: 8px;
+    margin-inline-end: 10px; /* 从8px增加到10px */
+    height: 34px; /* 明确设置高度 */
 }
 
 button#theme-toggle {

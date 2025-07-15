@@ -2,6 +2,52 @@
     /* theme-vars */
     :root {
         --gap: 14px;
+        --header-height: 70px; /* 增加header高度 */
+    }
+
+    /* header & nav - 移动端优化 */
+    .nav {
+        padding: 0 var(--gap);
+    }
+
+    /* logo - 移动端放大 */
+    .logo a {
+        font-size: 32px; /* 从28px进一步增加到32px */
+        font-weight: 700;
+    }
+
+    .logo a img, .logo a svg {
+        height: 40px; /* 从36px增加到40px */
+        margin-inline-end: 12px; /* 增加间距 */
+    }
+
+    /* menu - 移动端菜单优化 */
+    #menu {
+        gap: var(--gap); /* 增加菜单项间距 */
+    }
+
+    #menu a {
+        font-size: 18px; /* 从16px增加到18px */
+        padding: 8px 12px; /* 增加点击区域 */
+        border-radius: 6px;
+        transition: background-color 0.2s;
+    }
+
+    #menu a:hover {
+        background-color: var(--tertiary);
+    }
+
+    /* theme toggle button - 移动端优化 */
+    button#theme-toggle {
+        font-size: 28px; /* 从26px增加到28px */
+        padding: 8px;
+        margin: auto 6px;
+    }
+
+    /* lang switch - 移动端优化 */
+    .lang-switch a {
+        font-size: 18px; /* 从16px增加到18px */
+        padding: 6px 8px;
     }
 
     /* profile-mode */
@@ -36,9 +82,63 @@
     }
 }
 
+@media screen and (max-width: 480px) {
+    /* 小屏手机进一步优化 */
+    .logo a {
+        font-size: 30px; /* 从26px增加到30px */
+    }
+
+    .logo a img, .logo a svg {
+        height: 36px; /* 从32px增加到36px */
+    }
+
+    #menu {
+        flex-wrap: wrap; /* 允许菜单换行 */
+        justify-content: flex-start; /* 保持左对齐 */
+    }
+
+    #menu a {
+        font-size: 16px;
+        padding: 6px 10px;
+    }
+
+    /* 优化导航栏在小屏上的布局 */
+    .nav {
+        flex-direction: column;
+        align-items: center; /* 改为居中对齐 */
+        padding: var(--gap) var(--gap) 0;
+    }
+
+    .logo {
+        margin-bottom: 8px;
+    }
+
+    #menu {
+        justify-content: center; /* 菜单也居中 */
+    }
+}
+
 @media screen and (max-width: 340px) {
     .share-buttons {
         justify-content: unset;
+    }
+
+    /* 极小屏幕优化 */
+    .logo a {
+        font-size: 28px; /* 从24px增加到28px */
+    }
+
+    .logo a img, .logo a svg {
+        height: 32px; /* 从28px增加到32px */
+    }
+
+    #menu a {
+        font-size: 15px;
+        padding: 5px 8px;
+    }
+
+    button#theme-toggle {
+        font-size: 24px;
     }
 }
 
