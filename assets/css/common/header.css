@@ -71,6 +71,7 @@ body:not(.dark) #sun {
     border-bottom: none; /* 移除下划线 */
     color: var(--primary); /* 加深颜色 */
     transform: none; /* 移除放大效果 */
+    font-size: 16px; /* 确保选中状态字体大小与普通状态一致 */
 }
 
 .lang-switch li,

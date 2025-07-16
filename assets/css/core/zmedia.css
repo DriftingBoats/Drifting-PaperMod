@@ -12,12 +12,12 @@
 
     /* logo - 移动端放大 */
     .logo a {
-        font-size: 32px; /* 从28px进一步增加到32px */
+        font-size: 36px; /* 从32px进一步增加到36px */
         font-weight: 700;
     }
 
     .logo a img, .logo a svg {
-        height: 40px; /* 从36px增加到40px */
+        height: 44px; /* 从40px增加到44px */
         margin-inline-end: 12px; /* 增加间距 */
     }
 
@@ -27,10 +27,15 @@
     }
 
     #menu a {
-        font-size: 18px; /* 从16px增加到18px */
-        padding: 8px 12px; /* 增加点击区域 */
+        font-size: 20px; /* 从18px增加到20px */
+        padding: 10px 14px; /* 增加点击区域 */
         border-radius: 6px;
         transition: background-color 0.2s;
+    }
+
+    #menu .active {
+        font-size: 20px; /* 确保选中状态字体大小一致 */
+        font-weight: 500; /* 减轻字体粗细，避免视觉上显得更大 */
     }
 
     #menu a:hover {
@@ -85,11 +90,11 @@
 @media screen and (max-width: 480px) {
     /* 小屏手机进一步优化 */
     .logo a {
-        font-size: 30px; /* 从26px增加到30px */
+        font-size: 34px; /* 从30px增加到34px */
     }
 
     .logo a img, .logo a svg {
-        height: 36px; /* 从32px增加到36px */
+        height: 40px; /* 从36px增加到40px */
     }
 
     #menu {
@@ -98,14 +103,19 @@
     }
 
     #menu a {
-        font-size: 16px;
-        padding: 6px 10px;
+        font-size: 18px; /* 从16px增加到18px */
+        padding: 8px 12px; /* 增加padding */
+    }
+
+    #menu .active {
+        font-size: 18px; /* 确保选中状态字体大小一致 */
+        font-weight: 500; /* 减轻字体粗细，避免视觉上显得更大 */
     }
 
     /* 优化导航栏在小屏上的布局 */
     .nav {
         flex-direction: column;
-        align-items: center; /* 改为居中对齐 */
+        align-items: flex-start; /* 改为左对齐 */
         padding: var(--gap) var(--gap) 0;
     }
 
@@ -114,7 +124,7 @@
     }
 
     #menu {
-        justify-content: center; /* 菜单也居中 */
+        justify-content: flex-start; /* 菜单也左对齐 */
     }
 }
 
@@ -125,16 +135,21 @@
 
     /* 极小屏幕优化 */
     .logo a {
-        font-size: 28px; /* 从24px增加到28px */
+        font-size: 32px; /* 从28px增加到32px */
     }
 
     .logo a img, .logo a svg {
-        height: 32px; /* 从28px增加到32px */
+        height: 36px; /* 从32px增加到36px */
     }
 
     #menu a {
-        font-size: 15px;
-        padding: 5px 8px;
+        font-size: 17px; /* 从15px增加到17px */
+        padding: 7px 10px; /* 增加padding */
+    }
+
+    #menu .active {
+        font-size: 17px; /* 确保选中状态字体大小一致 */
+        font-weight: 500; /* 减轻字体粗细，避免视觉上显得更大 */
     }
 
     button#theme-toggle {
