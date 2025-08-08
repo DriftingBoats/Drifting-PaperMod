@@ -76,63 +76,63 @@
       flex: 1;
       display: flex;
       align-items: center;
-      justify-content: space-between;
       cursor: pointer;
       height: 32px;
-      overflow: hidden;
       padding: 0 8px;
       min-width: 0;
       width: 100%;
-    }
-    
-    .threads-waveform-bar {
-      width: 3px;
-      height: var(--bar-height, 8px);
-      background: rgba(0, 0, 0, 0.08);
-      border-radius: 1.5px;
-      transition: all 0.3s ease;
-      min-height: 8px;
-      max-height: 28px;
       position: relative;
-      flex-shrink: 0;
     }
     
-    .threads-waveform-bar::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+    .threads-progress-track {
+      width: 100%;
+      height: 4px;
+      background: rgba(0, 0, 0, 0.08);
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .threads-progress-fill {
+      height: 100%;
       background: #6c757d;
       border-radius: 2px;
+      width: 0%;
+      transition: width 0.1s ease;
+      position: relative;
+    }
+    
+    .threads-progress-fill::after {
+      content: '';
+      position: absolute;
+      right: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 12px;
+      height: 12px;
+      background: #6c757d;
+      border-radius: 50%;
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.2s ease;
     }
     
-    .threads-waveform-bar.active::after {
-      opacity: 0.9;
+    .threads-waveform:hover .threads-progress-fill::after {
+      opacity: 1;
     }
     
-    .threads-waveform-bar.played::after {
-      opacity: 0.7;
+    .dark .threads-progress-track {
+      background: rgba(255, 255, 255, 0.1);
     }
     
-    .threads-waveform-bar:hover {
-      background: rgba(0, 0, 0, 0.16);
+    .dark .threads-progress-fill {
+      background: #9aa0a6;
     }
     
-    .dark .threads-waveform-bar {
-      background: rgba(255, 255, 255, 0.2);
+    .dark .threads-progress-fill::after {
+      background: #9aa0a6;
     }
     
-    .dark .threads-waveform-bar:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
-    
-    .threads-audio-player.playing .threads-waveform-bar {
-      /* 移除随机动画，使用真实音频数据控制 */
-    }
+    /* 播放时的波形条样式由JavaScript动态控制 */
     
     .threads-time {
       font-size: 11px;
@@ -166,8 +166,20 @@
       }
     }
     
-    .threads-audio-player.playing .threads-play-button {
-      /* 播放时不显示任何底色效果 */
+    /* 播放时的播放按钮样式保持默认 */
+    
+    /* moments页面特殊样式 */
+    .moment-card .threads-audio-player {
+      margin: 8px 0;
+      padding: 8px 12px;
+    }
+    
+    .moment-card .threads-waveform {
+      padding: 0 4px;
+    }
+    
+    .moment-card .threads-waveform-bar {
+      min-width: 1.5px;
     }
     
     /* 响应式设计 */
@@ -203,6 +215,15 @@
         font-size: 10px;
         min-width: 45px;
       }
+      
+      /* moments页面移动端优化 */
+      .moment-card .threads-audio-player {
+        padding: 6px 10px;
+      }
+      
+      .moment-card .threads-waveform {
+        padding: 0 3px;
+      }
     }
     
 
@@ -226,7 +247,9 @@
   </button>
   
   <div class="threads-waveform" onclick="seekTo(event, '{{ $id }}')">
-    <!-- 波形条将通过JavaScript生成 -->
+    <div class="threads-progress-track">
+      <div class="threads-progress-fill"></div>
+    </div>
   </div>
   
   <div class="threads-time">
@@ -297,49 +320,10 @@ function formatTime(seconds) {
 function seekTo(event, id) {
   const player = document.getElementById(id);
   const audio = player.querySelector('audio');
-  const waveform = player.querySelector('.threads-waveform');
-  const rect = waveform.getBoundingClientRect();
+  const progressTrack = player.querySelector('.threads-progress-track');
+  const rect = progressTrack.getBoundingClientRect();
   const percent = (event.clientX - rect.left) / rect.width;
   audio.currentTime = percent * audio.duration;
-}
-
-function generateWaveform(container) {
-  // 等待容器渲染完成
-  setTimeout(() => {
-    // 根据容器宽度动态计算波形条数量
-    const containerWidth = container.offsetWidth;
-    const isMobile = window.innerWidth <= 480;
-    const padding = isMobile ? 12 : 16; // 移动端和桌面端的padding不同
-    const availableWidth = containerWidth - padding;
-     const barWidth = isMobile ? 2 : 2.5; // 桌面端波形条更粗
-     const barGap = isMobile ? 1.5 : 2; // 桌面端间距更大
-     const barCount = Math.max(12, Math.floor(availableWidth / (barWidth + barGap))); // 最少12个波形条
-     
-     // 清空容器
-     container.innerHTML = '';
-     
-     for (let i = 0; i < barCount; i++) {
-       const bar = document.createElement('div');
-       bar.className = 'threads-waveform-bar';
-       
-       // 根据设备类型生成合适的静态波形高度
-       const minHeight = isMobile ? 8 : 8;
-       const maxHeight = isMobile ? 24 : 28;
-      const baseHeight = minHeight + Math.random() * (maxHeight - minHeight);
-      bar.style.setProperty('--bar-height', `${baseHeight}px`);
-      bar.style.height = `${baseHeight}px`;
-      
-      // 设置波形条宽度
-      bar.style.width = `${barWidth}px`;
-      
-      // 添加右边距，除了最后一个
-      if (i < barCount - 1) {
-        bar.style.marginRight = '1px';
-      }
-      
-      container.appendChild(bar);
-    }
-  }, 100); // 延迟100ms确保容器已渲染
 }
 
 
@@ -356,18 +340,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const currentTimeSpan = player.querySelector('.current-time');
     const totalTimeSpan = player.querySelector('.total-time');
     const timeSeparator = player.querySelector('.time-separator');
-    
-    // 生成波形
-    generateWaveform(waveform);
-    
-    // 窗口大小变化时重新生成波形
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        generateWaveform(waveform);
-      }, 150);
-    });
+    const progressFill = player.querySelector('.threads-progress-fill');
     
 
     
@@ -389,28 +362,14 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    // 更新进度和激活波形条
+    // 更新进度条
     audio.addEventListener('timeupdate', function() {
       if (audio.duration) {
         const percent = audio.currentTime / audio.duration;
         currentTimeSpan.textContent = formatTime(audio.currentTime);
         
-        // 更新波形进度 - Threads风格线性进度
-        const bars = waveform.querySelectorAll('.threads-waveform-bar');
-        const currentBarIndex = Math.floor(percent * bars.length);
-        
-        bars.forEach((bar, index) => {
-          bar.classList.remove('active', 'played');
-          
-          if (index < currentBarIndex) {
-            // 已播放部分 - 深色
-            bar.classList.add('played');
-          } else if (index === currentBarIndex) {
-            // 当前播放位置 - 最深色
-            bar.classList.add('active');
-          }
-          // 未播放部分保持默认浅色
-        });
+        // 更新进度条
+        progressFill.style.width = `${percent * 100}%`;
       }
     });
     
@@ -423,19 +382,13 @@ document.addEventListener('DOMContentLoaded', function() {
       player.classList.remove('playing');
       currentTimeSpan.textContent = '0:00';
       
-      // 重置波形条
-      const bars = waveform.querySelectorAll('.threads-waveform-bar');
-      bars.forEach(bar => {
-        bar.classList.remove('active', 'played');
-      });
+      // 重置进度条
+      progressFill.style.width = '0%';
     });
     
-    // 暂停时重置波形
+    // 暂停时重置进度条
      audio.addEventListener('pause', function() {
-       const bars = waveform.querySelectorAll('.threads-waveform-bar');
-       bars.forEach(bar => {
-         bar.classList.remove('active', 'played');
-       });
+       progressFill.style.width = '0%';
      });
   });
 });
