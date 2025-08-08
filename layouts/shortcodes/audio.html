@@ -76,7 +76,7 @@
       flex: 1;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
       cursor: pointer;
       height: 32px;
       overflow: hidden;
@@ -313,7 +313,7 @@ function generateWaveform(container) {
     const availableWidth = containerWidth - padding;
      const barWidth = isMobile ? 2 : 2.5; // 桌面端波形条更粗
      const barGap = isMobile ? 1.5 : 2; // 桌面端间距更大
-     const barCount = Math.max(12, Math.floor(availableWidth / (barWidth + barGap))); // 最少12个波形条
+     const barCount = Math.max(12, Math.floor((availableWidth + barGap) / (barWidth + barGap))); // 最少12个波形条
      
      // 清空容器
      container.innerHTML = '';
@@ -334,7 +334,7 @@ function generateWaveform(container) {
       
       // 添加右边距，除了最后一个
       if (i < barCount - 1) {
-        bar.style.marginRight = '1px';
+        bar.style.marginRight = `${barGap}px`;
       }
       
       container.appendChild(bar);
