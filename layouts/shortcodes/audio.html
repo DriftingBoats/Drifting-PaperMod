@@ -1,0 +1,461 @@
+{{ $src := .Get "src" }}
+{{ $title := .Get "title" }}
+{{ $pageTitle := .Page.Title | default .Page.File.BaseFileName }}
+{{ $id := printf "audio-%s-%s-%d" (replace $src "." "-") (replace $pageTitle " " "-") now.UnixNano }}
+
+<div class="threads-audio-player" id="{{ $id }}">
+  <style>
+    .threads-audio-player {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #f8f9fa;
+      border: 1px solid rgba(0, 0, 0, 0.03);
+      border-radius: 16px;
+      padding: 10px 14px;
+      margin: 12px 0;
+      width: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+    
+
+    
+    .dark .threads-audio-player {
+      background: #2a2b2e;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    }
+    
+
+    
+    .threads-play-button {
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      position: relative;
+      padding: 0;
+      margin-right: 0px;
+    }
+    
+    .threads-play-button::before {
+      display: none;
+    }
+    
+
+    
+    .threads-play-button:active {
+      transform: scale(0.98);
+    }
+    
+    .threads-play-button svg {
+      width: 24px;
+      height: 24px;
+      fill: #666;
+    }
+    
+    .threads-play-button .pause-icon {
+      margin-left: 0;
+    }
+    
+    .dark .threads-play-button svg {
+      fill: #aaa;
+    }
+    
+
+    
+    .threads-waveform {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start; /* 避免元素拉伸导致大间距 */
+      cursor: pointer;
+      height: 32px;
+      overflow: hidden;
+      padding: 0 8px;
+      min-width: 0;
+      width: 100%;
+    }
+    
+    .threads-waveform-bar {
+      width: 3px;
+      height: var(--bar-height, 10px);
+      background: rgba(0, 0, 0, 0.08);
+      border-radius: 3px;
+      transition: background 0.2s ease, opacity 0.2s ease;
+      min-height: 6px;
+      max-height: 28px;
+      position: relative;
+      flex-shrink: 0;
+    }
+    
+    .threads-waveform-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, #6c757d 0%, #5d6870 100%);
+      border-radius: 3px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    
+    .threads-waveform-bar.active::after {
+      opacity: 0.9;
+    }
+    
+    .threads-waveform-bar.played::after {
+      opacity: 0.7;
+    }
+    
+    .threads-waveform-bar:hover {
+      background: rgba(0, 0, 0, 0.16);
+    }
+    
+    .dark .threads-waveform-bar {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .dark .threads-waveform-bar:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .threads-audio-player.playing .threads-waveform-bar {
+      /* 移除随机动画，使用真实音频数据控制 */
+    }
+    
+    .threads-time {
+      font-size: 11px;
+      color: #5f6368;
+      font-weight: 500;
+      white-space: nowrap;
+      min-width: 50px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.3px;
+    }
+    
+    .threads-time .time-separator {
+      margin: 0 1px;
+      opacity: 0.6;
+    }
+    
+    .dark .threads-time {
+      color: #9aa0a6;
+    }
+    
+    @keyframes waveAnimation {
+      /* 保留关键帧定义，但不再使用随机动画 */
+      0%, 100% { 
+        transform: scaleY(1);
+        opacity: 0.6;
+      }
+      50% { 
+        transform: scaleY(1.4);
+        opacity: 0.9;
+      }
+    }
+    
+    .threads-audio-player.playing .threads-play-button {
+      /* 播放时不显示任何底色效果 */
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 480px) {
+      .threads-audio-player {
+        width: 100%;
+        padding: 8px 12px;
+        gap: 4px;
+      }
+      
+      .threads-play-button {
+        width: 22px;
+        height: 22px;
+        margin-right: 0px;
+      }
+      
+      .threads-play-button svg {
+        width: 22px;
+        height: 22px;
+      }
+      
+      .threads-waveform {
+        padding: 0 6px;
+      }
+      
+      .threads-waveform-bar {
+        width: 2.5px;
+        min-height: 8px;
+        max-height: 24px;
+      }
+      
+      .threads-time {
+        font-size: 10px;
+        min-width: 45px;
+      }
+    }
+    
+
+  </style>
+  
+  <audio preload="metadata" style="display: none;"{{ if $title }} title="{{ $title }}"{{ end }}>
+    <source src="{{ $src }}" type="audio/mpeg">
+    <source src="{{ $src }}" type="audio/wav">
+    <source src="{{ $src }}" type="audio/ogg">
+    <source src="{{ $src }}" type="audio/flac">
+    您的浏览器不支持音频播放。
+  </audio>
+  
+  <button class="threads-play-button" onclick="togglePlay('{{ $id }}')">
+    <svg class="play-icon" viewBox="0 0 24 24">
+      <path d="M8 5v14l11-7z"/>
+    </svg>
+    <svg class="pause-icon" viewBox="0 0 24 24" style="display: none;">
+      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+    </svg>
+  </button>
+  
+  <div class="threads-waveform" onclick="seekTo(event, '{{ $id }}')">
+    <!-- 波形条将通过JavaScript生成 -->
+  </div>
+  
+  <div class="threads-time">
+    <span class="current-time">0:00</span><span class="time-separator" style="display: none;">/</span><span class="total-time" style="display: none;">0:00</span>
+  </div>
+</div>
+
+<script>
+function togglePlay(id) {
+  const player = document.getElementById(id);
+  const audio = player.querySelector('audio');
+  const playIcon = player.querySelector('.play-icon');
+  const pauseIcon = player.querySelector('.pause-icon');
+  const waveform = player.querySelector('.threads-waveform');
+  
+  if (audio.paused) {
+    // 暂停所有其他播放器
+    document.querySelectorAll('.threads-audio-player').forEach(otherPlayer => {
+      if (otherPlayer.id !== id) {
+        const otherAudio = otherPlayer.querySelector('audio');
+        const otherPlayIcon = otherPlayer.querySelector('.play-icon');
+        const otherPauseIcon = otherPlayer.querySelector('.pause-icon');
+        if (!otherAudio.paused) {
+          otherAudio.pause();
+          otherPlayIcon.style.display = 'block';
+          otherPauseIcon.style.display = 'none';
+          otherPlayer.classList.remove('playing');
+        }
+      }
+    });
+    
+    audio.play();
+    playIcon.style.display = 'none';
+    pauseIcon.style.display = 'block';
+    player.classList.add('playing');
+    
+    // 设置媒体会话元数据
+    const title = audio.getAttribute('title');
+    if (title && 'mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: title,
+        artist: '',
+        album: '',
+        artwork: [
+          { src: '/img/avatar.png', sizes: '96x96', type: 'image/png' },
+          { src: '/img/avatar.png', sizes: '128x128', type: 'image/png' },
+          { src: '/img/avatar.png', sizes: '192x192', type: 'image/png' },
+          { src: '/img/avatar.png', sizes: '256x256', type: 'image/png' },
+          { src: '/img/avatar.png', sizes: '384x384', type: 'image/png' },
+          { src: '/img/avatar.png', sizes: '512x512', type: 'image/png' }
+        ]
+      });
+    }
+  } else {
+    audio.pause();
+    playIcon.style.display = 'block';
+    pauseIcon.style.display = 'none';
+    player.classList.remove('playing');
+  }
+}
+
+function formatTime(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
+function seekTo(event, id) {
+  const player = document.getElementById(id);
+  const audio = player.querySelector('audio');
+  const waveform = player.querySelector('.threads-waveform');
+  const rect = waveform.getBoundingClientRect();
+  const percent = (event.clientX - rect.left) / rect.width;
+  audio.currentTime = percent * audio.duration;
+}
+
+function generateWaveform(container) {
+  // 根据容器宽度动态计算波形条数量
+  const containerWidth = container.clientWidth;
+  if (!containerWidth || containerWidth < 40) {
+    // 宽度未就绪，等后续 ResizeObserver/可见时再生成
+    return;
+  }
+  const isMobile = window.innerWidth <= 480;
+  const padding = isMobile ? 12 : 16; // 移动端和桌面端的padding不同
+  const availableWidth = Math.max(0, containerWidth - padding);
+  const barWidth = isMobile ? 2 : 2.5; // 桌面端波形条更粗
+  const barGap = isMobile ? 2 : 2;     // 使用固定间距，避免拉伸
+  const barCount = Math.max(18, Math.floor(availableWidth / (barWidth + barGap))); // 略增最小条数
+
+  // 清空容器
+  container.innerHTML = '';
+
+  for (let i = 0; i < barCount; i++) {
+    const bar = document.createElement('div');
+    bar.className = 'threads-waveform-bar';
+
+    // 根据设备类型生成合适的静态波形高度
+    const minHeight = isMobile ? 6 : 8;
+    const maxHeight = isMobile ? 22 : 26;
+    const baseHeight = minHeight + Math.random() * (maxHeight - minHeight);
+    bar.style.setProperty('--bar-height', `${baseHeight}px`);
+    bar.style.height = `${baseHeight}px`;
+
+    // 设置波形条宽度与间距
+    bar.style.width = `${barWidth}px`;
+    if (i < barCount - 1) {
+      bar.style.marginRight = `${barGap}px`;
+    }
+
+    container.appendChild(bar);
+  }
+}
+
+
+
+
+
+// 初始化音频播放器
+document.addEventListener('DOMContentLoaded', function() {
+  const players = document.querySelectorAll('.threads-audio-player');
+  
+  players.forEach(player => {
+    const audio = player.querySelector('audio');
+    const waveform = player.querySelector('.threads-waveform');
+    const currentTimeSpan = player.querySelector('.current-time');
+    const totalTimeSpan = player.querySelector('.total-time');
+    const timeSeparator = player.querySelector('.time-separator');
+    
+    // 生成波形（首屏尝试）
+    generateWaveform(waveform);
+    
+    // 使用 ResizeObserver 在宽度变化时重新生成
+    if ('ResizeObserver' in window) {
+      const ro = new ResizeObserver(entries => {
+        for (const entry of entries) {
+          if (entry.contentRect && entry.contentRect.width > 0) {
+            generateWaveform(waveform);
+          }
+        }
+      });
+      ro.observe(waveform);
+    } else {
+      // 退化：监听窗口尺寸变化
+      let resizeTimeout;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => generateWaveform(waveform), 150);
+      });
+    }
+    
+    // 使用 IntersectionObserver 在元素进入视口时确保生成
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) generateWaveform(waveform);
+        });
+      }, { threshold: 0.1 });
+      io.observe(waveform);
+    }
+    
+
+    
+    // 音频元数据加载完成后显示总时长
+    audio.addEventListener('loadedmetadata', function() {
+      if (audio.duration && !isNaN(audio.duration) && audio.duration !== Infinity) {
+        totalTimeSpan.textContent = formatTime(audio.duration);
+        totalTimeSpan.style.display = 'inline';
+        player.querySelector('.time-separator').style.display = 'inline';
+      }
+    });
+    
+    // 备用方案：监听canplaythrough事件
+    audio.addEventListener('canplaythrough', function() {
+      if (audio.duration && !isNaN(audio.duration) && audio.duration !== Infinity && totalTimeSpan.style.display === 'none') {
+        totalTimeSpan.textContent = formatTime(audio.duration);
+        totalTimeSpan.style.display = 'inline';
+        player.querySelector('.time-separator').style.display = 'inline';
+      }
+    });
+    
+    // 更新进度和激活波形条
+    audio.addEventListener('timeupdate', function() {
+      if (audio.duration) {
+        const percent = audio.currentTime / audio.duration;
+        currentTimeSpan.textContent = formatTime(audio.currentTime);
+        
+        // 更新波形进度 - Threads风格线性进度
+        const bars = waveform.querySelectorAll('.threads-waveform-bar');
+        const currentBarIndex = Math.floor(percent * bars.length);
+        
+        bars.forEach((bar, index) => {
+          bar.classList.remove('active', 'played');
+          
+          if (index < currentBarIndex) {
+            // 已播放部分 - 深色
+            bar.classList.add('played');
+          } else if (index === currentBarIndex) {
+            // 当前播放位置 - 最深色
+            bar.classList.add('active');
+          }
+          // 未播放部分保持默认浅色
+        });
+      }
+    });
+    
+    // 播放结束重置
+    audio.addEventListener('ended', function() {
+      const playIcon = player.querySelector('.play-icon');
+      const pauseIcon = player.querySelector('.pause-icon');
+      playIcon.style.display = 'block';
+      pauseIcon.style.display = 'none';
+      player.classList.remove('playing');
+      currentTimeSpan.textContent = '0:00';
+      
+      // 重置波形条
+      const bars = waveform.querySelectorAll('.threads-waveform-bar');
+      bars.forEach(bar => {
+        bar.classList.remove('active', 'played');
+      });
+    });
+    
+    // 暂停时重置波形
+     audio.addEventListener('pause', function() {
+       const bars = waveform.querySelectorAll('.threads-waveform-bar');
+       bars.forEach(bar => {
+         bar.classList.remove('active', 'played');
+       });
+     });
+  });
+});
+</script>

@@ -1,0 +1,154 @@
+/* 固定顶部导航 */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(248, 249, 250, 0.75); /* 与页面背景色一致 */
+    border-bottom: none; /* 移除底部边框 */
+    backdrop-filter: blur(15px); /* 增强模糊效果 */
+    -webkit-backdrop-filter: blur(15px);
+}
+
+/* 为body添加顶部padding，避免内容被固定header遮挡 */
+body {
+    padding-top: var(--header-height);
+}
+
+/* 调整main容器的padding-top，避免重复padding */
+.main {
+    padding-top: var(--gap);
+}
+
+/* 移动端优化 - 紧凑设计 */
+@media screen and (max-width: 768px) {
+    .nav {
+        line-height: 40px; /* 减小行高，降低屏占比 */
+        padding: 6px 12px; /* 减小内边距 */
+        border-radius: 0 0 8px 8px; /* 减小圆角 */
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06); /* 更轻微的阴影 */
+    }
+    
+    .logo a {
+        font-size: 20px; /* 增大logo字体，突出主体 */
+        font-weight: 700; /* 更粗字重，增强视觉层次 */
+        letter-spacing: -0.02em; /* 字母间距 */
+    }
+    
+    #menu {
+        gap: 8px; /* 减小菜单项间距 */
+    }
+    
+    #menu a {
+        font-size: 12px; /* 显著减小菜单字体 */
+        font-weight: 400; /* 减轻字重，弱化菜单 */
+        padding: 4px 8px; /* 减小点击区域 */
+        border-radius: 6px; /* 减小圆角 */
+        transition: all 0.2s ease; /* 平滑过渡 */
+        opacity: 0.8; /* 降低透明度，弱化视觉 */
+    }
+    
+    #menu a:hover {
+        background: rgba(0, 0, 0, 0.05); /* 悬停效果 */
+        opacity: 1; /* 悬停时恢复透明度 */
+    }
+    
+    button#theme-toggle {
+        font-size: 16px; /* 减小主题切换按钮 */
+        width: 32px; /* 固定宽度 */
+        height: 32px; /* 固定高度，确保圆形 */
+        padding: 0; /* 移除padding，避免变形 */
+        border-radius: 50%; /* 圆形按钮 */
+        transition: all 0.2s ease;
+        background: rgba(0, 0, 0, 0.02); /* 更轻微的背景 */
+        opacity: 0.7; /* 降低透明度 */
+        display: flex; /* 使用flex布局 */
+        align-items: center; /* 垂直居中 */
+        justify-content: center; /* 水平居中 */
+    }
+    
+    button#theme-toggle:hover {
+        background: rgba(0, 0, 0, 0.06);
+        opacity: 1; /* 悬停时恢复透明度 */
+        transform: scale(1.02); /* 减小放大效果 */
+    }
+    
+    /* 减小元素间距 */
+    .logo {
+        margin: auto 4px; /* logo保持适当间距 */
+    }
+    
+    #menu {
+        margin: auto 2px; /* 菜单减小间距 */
+    }
+    
+    /* 菜单项间距 */
+    #menu li + li {
+        margin-inline-start: 0; /* 使用gap替代 */
+    }
+}
+
+/* 暗色模式下的背景 */
+body.dark .header {
+    background: rgba(29, 30, 32, 0.75); /* 暗色模式下与页面背景色一致 */
+    border-bottom: none; /* 移除底部边框 */
+}
+
+/* 移动端取消固定定位，使用普通流布局 */
+@media screen and (max-width: 768px) {
+    .header {
+        position: static; /* 移动端取消固定定位 */
+        background: transparent; /* 完全透明背景，无边界 */
+        backdrop-filter: none; /* 移除模糊效果 */
+        -webkit-backdrop-filter: none;
+        border-bottom: none; /* 移除底部边框 */
+        margin-bottom: 0; /* 移除与内容的间距 */
+        box-shadow: none; /* 移除阴影 */
+    }
+    
+    /* 暗色模式下的移动端背景 */
+    body.dark .header {
+        background: transparent; /* 暗色模式也使用透明背景 */
+    }
+    
+    /* 移动端移除body的padding-top */
+    body {
+        padding-top: 0 !important;
+    }
+    
+    /* 移动端缩小main容器的上边距 */
+    .main {
+        padding-top: 8px !important; /* 从默认的14px减少到8px */
+    }
+    
+    /* 移动端导航样式调整 */
+    .nav {
+        box-shadow: none; /* 移除导航阴影 */
+        border-radius: 0; /* 移除圆角 */
+    }
+    
+    /* 移动端选中导航样式 - 去掉下划线，改为加粗加深 */
+    #menu .active {
+        font-weight: 700 !important; /* 加粗 */
+        border-bottom: none !important; /* 移除下划线 */
+        color: var(--primary) !important; /* 加深颜色 */
+        transform: none !important; /* 移除放大效果 */
+        opacity: 1 !important; /* 确保完全不透明 */
+    }
+}
+
+/* 平滑过渡效果 */
+.header {
+    transition: all 0.3s ease;
+}
+
+/* 滚动时的微弱阴影效果 */
+.header.scrolled {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* 极其微弱的阴影 */
+}
+
+body.dark .header.scrolled {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15); /* 暗色模式下稍微明显一点 */
+}/* 暗色模式下稍微明显一点 */
+}

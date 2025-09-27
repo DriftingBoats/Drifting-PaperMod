@@ -1,0 +1,78 @@
+<!-- layouts/partials/comments.html -->
+{{- if .Site.Params.comments }}
+    <!-- 评论容器 -->
+    <div class="waline-container" data-path="{{ .Permalink | relURL }}"></div>
+    <link href="https://unpkg.com/@waline/client@v3/dist/waline.css" rel="stylesheet" />
+
+    <!-- 初始化 Waline 的脚本 -->
+    <script>
+        // 确保页面完全加载后再初始化
+        function initWaline() {
+            // 检查容器是否存在
+            const walineContainers = document.querySelectorAll('.waline-container[data-path]');
+            if (walineContainers.length === 0) {
+                console.warn('未找到 Waline 容器');
+                return;
+            }
+
+            // 动态导入 Waline
+            import('https://unpkg.com/@waline/client@v3/dist/waline.js')
+                .then(({ init }) => {
+                    walineContainers.forEach(container => {
+                        // 避免重复初始化
+                        if (container.__waline__) {
+                            return;
+                        }
+
+                        const path = container.getAttribute('data-path');
+                        if (!path) {
+                            console.warn('Waline 容器缺少 data-path 属性');
+                            return;
+                        }
+
+                        try {
+                            container.__waline__ = init({
+                                el: container,
+                                serverURL: '{{ .Site.Params.waline.serverURL }}',
+                                lang: '{{ .Site.Params.waline.lang }}',
+                                visitor: '{{ .Site.Params.waline.visitor | default "匿名者" }}',
+                                emoji: [
+                                    {{- range .Site.Params.waline.emoji }}
+                                        '{{ . }}',
+                                    {{- end }}
+                                ],
+                                requiredMeta: [
+                                    {{- range .Site.Params.waline.requiredMeta }}
+                                        '{{ . }}',
+                                    {{- end }}
+                                ],
+                                locale: {
+                                    admin: '{{ .Site.Params.waline.locale.admin }}',
+                                    placeholder: '{{ .Site.Params.waline.locale.placeholder }}',
+                                },
+                                path: path,
+                                dark: '{{ .Site.Params.waline.dark | default "body.dark" }}'
+                            });
+                            console.log('Waline 初始化成功:', path);
+                        } catch (error) {
+                            console.error('Waline 初始化失败:', error);
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Waline 模块加载失败:', error);
+                });
+        }
+
+        // 多重保险确保DOM加载完成
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initWaline);
+        } else {
+            // DOM已经加载完成
+            initWaline();
+        }
+
+        // 额外的延迟初始化，防止某些情况下DOM还未完全准备好
+        setTimeout(initWaline, 100);
+    </script>
+{{- end }}

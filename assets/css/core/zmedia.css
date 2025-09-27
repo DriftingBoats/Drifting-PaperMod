@@ -1,0 +1,170 @@
+@media screen and (max-width: 768px) {
+    /* theme-vars */
+    :root {
+        --gap: 14px;
+        --header-height: 70px; /* 增加header高度 */
+    }
+
+    /* header & nav - 移动端优化 */
+    .nav {
+        padding: 0 var(--gap);
+    }
+
+    /* logo - 移动端放大 */
+    .logo a {
+        font-size: 36px; /* 从32px进一步增加到36px */
+        font-weight: 700;
+    }
+
+    .logo a img, .logo a svg {
+        height: 44px; /* 从40px增加到44px */
+        margin-inline-end: 12px; /* 增加间距 */
+    }
+
+    /* menu - 移动端菜单优化 */
+    #menu {
+        gap: var(--gap); /* 增加菜单项间距 */
+    }
+
+    #menu a {
+        font-size: 20px; /* 从18px增加到20px */
+        padding: 10px 14px; /* 增加点击区域 */
+        border-radius: 6px;
+        transition: background-color 0.2s;
+    }
+
+    #menu .active {
+        font-size: 20px; /* 确保选中状态字体大小一致 */
+        font-weight: 500; /* 减轻字体粗细，避免视觉上显得更大 */
+    }
+
+    #menu a:hover {
+        background-color: var(--tertiary);
+    }
+
+    /* theme toggle button - 移动端优化 */
+    button#theme-toggle {
+        font-size: 28px; /* 从26px增加到28px */
+        padding: 8px;
+        margin: auto 6px;
+    }
+
+    /* lang switch - 移动端优化 */
+    .lang-switch a {
+        font-size: 18px; /* 从16px增加到18px */
+        padding: 6px 8px;
+    }
+
+    /* profile-mode */
+    .profile img {
+        transform: scale(0.85);
+    }
+
+    /* post-entry */
+    .first-entry {
+        min-height: 260px;
+    }
+
+    /* archive */
+    .archive-month {
+        flex-direction: column;
+    }
+
+    .archive-year {
+        margin-top: 20px;
+    }
+
+    /* footer */
+    .footer {
+        padding: calc((var(--footer-height) - var(--gap) - 10px) / 2) var(--gap);
+    }
+}
+
+/* footer */
+@media screen and (max-width: 900px) {
+    .list .top-link {
+        transform: translateY(-5rem);
+    }
+}
+
+@media screen and (max-width: 480px) {
+    /* 小屏手机进一步优化 */
+    .logo a {
+        font-size: 34px; /* 从30px增加到34px */
+    }
+
+    .logo a img, .logo a svg {
+        height: 40px; /* 从36px增加到40px */
+    }
+
+    #menu {
+        flex-wrap: wrap; /* 允许菜单换行 */
+        justify-content: flex-start; /* 保持左对齐 */
+    }
+
+    #menu a {
+        font-size: 18px; /* 从16px增加到18px */
+        padding: 8px 12px; /* 增加padding */
+    }
+
+    #menu .active {
+        font-size: 18px; /* 确保选中状态字体大小一致 */
+        font-weight: 500; /* 减轻字体粗细，避免视觉上显得更大 */
+    }
+
+    /* 优化导航栏在小屏上的布局 */
+    .nav {
+        flex-direction: column;
+        align-items: flex-start; /* 改为左对齐 */
+        padding: var(--gap) var(--gap) 0;
+    }
+
+    .logo {
+        margin-bottom: 8px;
+    }
+
+    #menu {
+        justify-content: flex-start; /* 菜单也左对齐 */
+    }
+}
+
+@media screen and (max-width: 340px) {
+    .share-buttons {
+        justify-content: unset;
+    }
+
+    /* 极小屏幕优化 */
+    .logo a {
+        font-size: 32px; /* 从28px增加到32px */
+    }
+
+    .logo a img, .logo a svg {
+        height: 36px; /* 从32px增加到36px */
+    }
+
+    #menu a {
+        font-size: 17px; /* 从15px增加到17px */
+        padding: 7px 10px; /* 增加padding */
+    }
+
+    #menu .active {
+        font-size: 17px; /* 确保选中状态字体大小一致 */
+        font-weight: 500; /* 减轻字体粗细，避免视觉上显得更大 */
+    }
+
+    button#theme-toggle {
+        font-size: 24px;
+    }
+}
+
+@media (prefers-reduced-motion) {
+    /* terms; profile-mode; post-single; post-entry; post-entry; search; search */
+    .terms-tags a:active,
+    .button:active,
+    .post-entry:active,
+    .top-link,
+    #searchResults .focus,
+    #searchResults li:active {
+        transform: none;
+    }
+}
