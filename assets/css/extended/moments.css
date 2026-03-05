@@ -198,30 +198,6 @@ margin-left: 0.3em;
 }
 
 /* 评论容器激活时 */
-.waline-container.active {
-margin-top: 1rem;
-box-sizing: border-box;
-}
-
-.waline-container .wl-avatar {
-display: flex;
-justify-content: center;
-align-items: center;
-}
-
-.waline-container .wl-avatar img {
-display: flex;
-justify-content: center;
-align-items: center;
-width: 100%;
-height: 100%;
-border-radius: 50%;
-}
-
-.waline-container .wl-cards .wl-user .verified-icon{
-display: none; 
-}
-
 /* 顶部筛选标签样式 */
 .tags-filter {
 margin-bottom: 20px;

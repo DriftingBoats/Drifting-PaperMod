@@ -1,0 +1,62 @@
+/* Global Waline overrides */
+.waline-container.active {
+  margin-top: 1rem;
+  box-sizing: border-box;
+}
+
+.waline-container [data-waline] a,
+.waline-container [data-waline] a:hover,
+.waline-container [data-waline] a:visited {
+  box-shadow: none !important;
+  text-decoration: none;
+  box-decoration-break: slice;
+  -webkit-box-decoration-break: slice;
+}
+
+.waline-container .wl-card .wl-head .wl-nick,
+.waline-container .wl-card span.wl-nick {
+  font-weight: 400 !important;
+}
+
+.waline-container .wl-count,
+.waline-container .wl-card .wl-head,
+.waline-container .wl-card .wl-content,
+.waline-container .wl-card .wl-meta,
+.waline-container .wl-card .wl-content p {
+  font-weight: 400 !important;
+}
+
+.waline-container .wl-editor,
+.waline-container .wl-input,
+.waline-container .wl-header input,
+.waline-container .wl-header label,
+.waline-container textarea,
+.waline-container input {
+  font-weight: 400 !important;
+}
+
+.waline-container .wl-editor::placeholder,
+.waline-container .wl-input::placeholder,
+.waline-container textarea::placeholder,
+.waline-container input::placeholder {
+  font-weight: 400 !important;
+}
+
+.waline-container .wl-avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.waline-container .wl-avatar img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.waline-container .wl-cards .wl-user .verified-icon {
+  display: none;
+}
