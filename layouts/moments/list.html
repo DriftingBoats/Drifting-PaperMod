@@ -10,6 +10,7 @@
     />
 
     {{ $dateformat := .Params.DateFormat }}
+    {{ $momentPages := .RegularPages.ByDate.Reverse }}
 
     <article class="post-single">
         <header class="page-header">
@@ -20,13 +21,13 @@
         <div class="tags-filter">
             <ul>
                 <!-- 计算所有moments的数量 -->
-                {{ $totalCount := len .Pages }}
+                {{ $totalCount := len $momentPages }}
                 <li><a href="#" class="tag-filter all-tags">全部 <sup><strong><sup>{{ $totalCount }}</sup></strong></sup></a></li>
                 <!-- 全部Tag不显示数量的代码：<li><a href="#" class="tag-filter all-tags">全部</a></li> -->
                 {{ $tags := slice }} <!-- 用于存储所有标签 -->
                 {{ $tagCounts := dict }} <!-- 用于存储每个标签的计数 -->
                 
-                {{ range .Pages }}
+                {{ range $momentPages }}
                     {{ range .Params.tags }}
                         {{ if not (in $tags .) }}
                             {{ $tags = $tags | append . }}
@@ -54,10 +55,15 @@
          
         <div class="post-content">
             <div class="moments-list">
-                {{ range .Pages }}
+                {{ range $momentPages }}
                     {{ if .Content }}
+                        {{ $basePermalink := .RelPermalink }}
+                        {{ if not $basePermalink }}
+                            {{ $bundleDir := replace .File.Dir "\\" "/" }}
+                            {{ $basePermalink = printf "/%s" $bundleDir }}
+                        {{ end }}
                         <!-- 卡片容器 -->
-                        <div class="moment-card">
+                        <div class="moment-card" data-base-permalink="{{ $basePermalink }}">
                             <!-- 头部：头像 + 作者名 -->
                             <div class="moment-header">
                                 <div class="left-content">
@@ -139,6 +145,100 @@
     <!-- JavaScript 代码 -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const isSkippableUrl = (value) => {
+                if (!value) {
+                    return true;
+                }
+
+                const url = value.trim();
+                if (!url) {
+                    return true;
+                }
+
+                return url.startsWith('/') ||
+                    url.startsWith('http://') ||
+                    url.startsWith('https://') ||
+                    url.startsWith('//') ||
+                    url.startsWith('data:') ||
+                    url.startsWith('blob:') ||
+                    url.startsWith('mailto:') ||
+                    url.startsWith('tel:') ||
+                    url.startsWith('javascript:') ||
+                    url.startsWith('#');
+            };
+
+            const normalizeUrl = (value, basePermalink) => {
+                if (!basePermalink || isSkippableUrl(value)) {
+                    return value;
+                }
+
+                try {
+                    const normalized = new URL(value, window.location.origin + basePermalink);
+                    return `${normalized.pathname}${normalized.search}${normalized.hash}`;
+                } catch (error) {
+                    return value;
+                }
+            };
+
+            const normalizeSrcset = (value, basePermalink) => {
+                if (!value || !basePermalink) {
+                    return value;
+                }
+
+                return value
+                    .split(',')
+                    .map(item => {
+                        const trimmed = item.trim();
+                        if (!trimmed) {
+                            return trimmed;
+                        }
+
+                        const firstSpaceIndex = trimmed.search(/\s/);
+                        if (firstSpaceIndex === -1) {
+                            return normalizeUrl(trimmed, basePermalink);
+                        }
+
+                        const rawUrl = trimmed.slice(0, firstSpaceIndex);
+                        const descriptor = trimmed.slice(firstSpaceIndex).trim();
+                        const normalizedUrl = normalizeUrl(rawUrl, basePermalink);
+                        return descriptor ? `${normalizedUrl} ${descriptor}` : normalizedUrl;
+                    })
+                    .join(', ');
+            };
+
+            const normalizeMomentUrls = (card) => {
+                const basePermalink = (card.dataset.basePermalink || '').replace(/\\/g, '/');
+                if (!basePermalink) {
+                    return;
+                }
+
+                card.querySelectorAll('img[src]').forEach(img => {
+                    img.setAttribute('src', normalizeUrl(img.getAttribute('src'), basePermalink));
+                });
+
+                card.querySelectorAll('img[srcset]').forEach(img => {
+                    img.setAttribute('srcset', normalizeSrcset(img.getAttribute('srcset'), basePermalink));
+                });
+
+                card.querySelectorAll('a[href]').forEach(anchor => {
+                    anchor.setAttribute('href', normalizeUrl(anchor.getAttribute('href'), basePermalink));
+                });
+
+                card.querySelectorAll('source[src]').forEach(source => {
+                    source.setAttribute('src', normalizeUrl(source.getAttribute('src'), basePermalink));
+                });
+
+                card.querySelectorAll('video[src]').forEach(video => {
+                    video.setAttribute('src', normalizeUrl(video.getAttribute('src'), basePermalink));
+                });
+
+                card.querySelectorAll('video[poster]').forEach(video => {
+                    video.setAttribute('poster', normalizeUrl(video.getAttribute('poster'), basePermalink));
+                });
+            };
+
+            document.querySelectorAll('.moment-card').forEach(normalizeMomentUrls);
+
             // 图片懒加载和预加载处理
             const imageObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
