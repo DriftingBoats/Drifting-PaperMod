@@ -1,62 +1,171 @@
-/* Global Waline overrides */
-.waline-container.active {
-  margin-top: 1rem;
-  box-sizing: border-box;
+/* Waline baseline styles shared by post and moments */
+.waline-container--post-base {
+  color: var(--content);
+  font-weight: 400;
+  line-height: 1.6;
 }
 
-.waline-container [data-waline] a,
-.waline-container [data-waline] a:hover,
-.waline-container [data-waline] a:visited {
+/* Remove underline/box-shadow decoration for all Waline links */
+.waline-container--post-base [data-waline] a,
+.waline-container--post-base [data-waline] a:hover,
+.waline-container--post-base [data-waline] a:visited {
   box-shadow: none !important;
-  text-decoration: none;
+  text-decoration: none !important;
   box-decoration-break: slice;
   -webkit-box-decoration-break: slice;
 }
 
-.waline-container .wl-card .wl-head .wl-nick,
-.waline-container .wl-card span.wl-nick {
+/* Keep hover interaction without bringing back underline */
+.waline-container--post-base [data-waline] a:hover {
+  color: var(--primary);
+}
+
+.waline-container--post-base .wl-count,
+.waline-container--post-base .wl-meta,
+.waline-container--post-base .wl-head,
+.waline-container--post-base .wl-card .wl-head,
+.waline-container--post-base .wl-card .wl-content,
+.waline-container--post-base .wl-card .wl-content p,
+.waline-container--post-base .wl-card .wl-meta,
+.waline-container--post-base .wl-card .wl-head .wl-nick,
+.waline-container--post-base .wl-card span.wl-nick,
+.waline-container--post-base .wl-editor,
+.waline-container--post-base .wl-input,
+.waline-container--post-base .wl-header input,
+.waline-container--post-base .wl-header label,
+.waline-container--post-base textarea,
+.waline-container--post-base input {
+  color: inherit !important;
   font-weight: 400 !important;
 }
 
-.waline-container .wl-count,
-.waline-container .wl-card .wl-head,
-.waline-container .wl-card .wl-content,
-.waline-container .wl-card .wl-meta,
-.waline-container .wl-card .wl-content p {
+.waline-container--post-base .wl-editor::placeholder,
+.waline-container--post-base .wl-input::placeholder,
+.waline-container--post-base textarea::placeholder,
+.waline-container--post-base input::placeholder {
   font-weight: 400 !important;
 }
 
-.waline-container .wl-editor,
-.waline-container .wl-input,
-.waline-container .wl-header input,
-.waline-container .wl-header label,
-.waline-container textarea,
-.waline-container input {
-  font-weight: 400 !important;
-}
-
-.waline-container .wl-editor::placeholder,
-.waline-container .wl-input::placeholder,
-.waline-container textarea::placeholder,
-.waline-container input::placeholder {
-  font-weight: 400 !important;
-}
-
-.waline-container .wl-avatar {
+.waline-container--post-base [data-waline] .wl-cards .wl-card-item {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  align-items: flex-start !important;
 }
 
-.waline-container .wl-avatar img {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.waline-container--post-base [data-waline] .wl-comment .wl-login-info {
+  max-width: 80px;
+  margin-top: 0.75em;
+  text-align: center;
+}
+
+.waline-container--post-base [data-waline] .wl-comment .wl-login-info .wl-avatar {
+  position: relative;
+  width: var(--waline-avatar-size);
+  height: var(--waline-avatar-size);
+  margin: 0 auto;
+  border: var(--waline-border);
+  border-radius: var(--waline-avatar-radius);
+}
+
+@media (max-width: 720px) {
+  .waline-container--post-base [data-waline] .wl-comment .wl-login-info .wl-avatar {
+    width: var(--waline-m-avatar-size);
+    height: var(--waline-m-avatar-size);
+  }
+}
+
+.waline-container--post-base [data-waline] .wl-comment .wl-login-info .wl-avatar > .wl-login-nick {
+  display: block !important;
+  line-height: 0 !important;
+}
+
+.waline-container--post-base [data-waline] .wl-comment .wl-login-info .wl-avatar img {
+  display: block;
   width: 100%;
   height: 100%;
-  border-radius: 50%;
+  border-radius: var(--waline-avatar-radius);
 }
 
-.waline-container .wl-cards .wl-user .verified-icon {
+.waline-container--post-base [data-waline] .wl-comment .wl-login-info > .wl-login-nick {
+  position: static !important;
+  display: block !important;
+  margin-top: 0.3em !important;
+  line-height: 1.3 !important;
+  text-align: center !important;
+  word-break: break-all;
+}
+
+.waline-container--post-base [data-waline] .wl-cards .wl-user {
+  flex: 0 0 auto;
+  align-self: flex-start !important;
+  margin-top: 0 !important;
+}
+
+.waline-container--post-base [data-waline] .wl-cards .wl-user .wl-user-avatar {
+  display: block !important;
+  width: var(--avatar-size) !important;
+  height: var(--avatar-size) !important;
+  vertical-align: top !important;
+  object-fit: cover !important;
+}
+
+.waline-container--post-base [data-waline] .wl-cards .wl-user .verified-icon,
+.waline-container--post-base [data-waline] .wl-cards .wl-user .administrator-icon {
   display: none;
+}
+
+/* Moments renders Waline inside .post-content; reset inherited article image spacing */
+.post-content .waline-container--post-base [data-waline] img {
+  margin: 0 !important;
+}
+
+.post-content .waline-container--post-base [data-waline] .wl-avatar img,
+.post-content .waline-container--post-base [data-waline] .wl-cards .wl-user .wl-user-avatar {
+  border-radius: var(--waline-avatar-radius) !important;
+}
+
+/* Fix @reply nickname baseline alignment */
+.waline-container--post-base .wl-card .wl-content .wl-reply-to {
+  float: none;
+  display: inline-flex;
+  align-items: baseline;
+  margin: 0 0.35em 0 0;
+}
+
+.waline-container--post-base .wl-card .wl-content .wl-reply-to .wl-nick {
+  display: inline !important;
+  line-height: inherit !important;
+  vertical-align: baseline;
+}
+
+/* Compact spacing shared by post and moments */
+.waline-container--post-base .wl-card-item {
+  padding: 0.35em 0;
+}
+
+.waline-container--post-base .wl-card-item .wl-card-item {
+  padding-top: 0.25em;
+}
+
+.waline-container--post-base .wl-card {
+  padding-bottom: 0.35em;
+}
+
+.waline-container--post-base .wl-card .wl-head {
+  line-height: 1.3;
+}
+
+.waline-container--post-base .wl-card .wl-content {
+  padding-top: 0.4em;
+  margin-bottom: 0.45em;
+  line-height: 1.75;
+}
+
+.waline-container--post-base .wl-card .wl-content p {
+  margin: 0.35em 0 !important;
+}
+
+/* Moments-only micro adjustment for expand/collapse mode */
+.moments-list .waline-container--moment.active {
+  margin-top: 0.75rem;
+  box-sizing: border-box;
 }

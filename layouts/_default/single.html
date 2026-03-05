@@ -1,9 +1,12 @@
 {{- define "main" }}
+{{- $toc := .TableOfContents }}
+{{- $hasTOC := strings.Contains $toc "<li>" }}
+{{- $showSidebarToc := and (eq .Section "posts") (.Param "ShowToc") $hasTOC }}
 
-<article class="post-single">
+<article class="post-single{{- if $showSidebarToc }} post-single--toc-outside{{- end }}">
   <header class="post-header">
     {{ partial "breadcrumbs.html" . }}
-    <h1 class="post-title entry-hint-parent">
+    <h1 class="post-title entry-hint-parent" id="post-top">
       {{ .Title }}
       {{- if .Draft }}
       <span class="entry-hint" title="Draft">
@@ -30,9 +33,6 @@
   </header>
   {{- $isHidden := (.Param "cover.hiddenInSingle") | default (.Param "cover.hidden") | default false }}
   {{- partial "cover.html" (dict "cxt" . "IsSingle" true "isHidden" $isHidden) }}
-  {{- if (.Param "ShowToc") }}
-  {{- partial "toc.html" . }}
-  {{- end }}
 
   {{- if .Content }}
   <div class="post-content">
@@ -61,5 +61,11 @@
   {{- partial "comments.html" . }}
   {{- end }}
 </article>
+
+{{- if $showSidebarToc }}
+<div class="post-toc-outside">
+  {{- partial "toc.html" . }}
+</div>
+{{- end }}
 
 {{- end }}{{/* end main */}}

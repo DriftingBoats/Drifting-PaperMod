@@ -1,8 +1,7 @@
 <!-- layouts/partials/comments.html -->
 {{- if .Site.Params.comments }}
     <!-- 评论容器 -->
-    <div class="waline-container" data-path="{{ .Permalink | relURL }}"></div>
-    <link href="https://unpkg.com/@waline/client@v3/dist/waline.css" rel="stylesheet" />
+    <div class="waline-container waline-container--post-base" data-path="{{ .Permalink | relURL }}"></div>
 
     <!-- 初始化 Waline 的脚本 -->
     <script>
