@@ -1,53 +1,36 @@
-<h1 align=center>🚧 Drifting PaperMod | <a href="https://blog.drifting.boats" rel="nofollow">Demo</a></h1>
+# Drifting-PaperMod
 
-<br>
+Personalized [Hugo-PaperMod](https://github.com/adityatelange/hugo-PaperMod) theme used by [Drifting Boats](https://blog.drifting.boats/).
 
-本主题是 [Hugo-PaperMod](https://github.com/adityatelange/hugo-PaperMod) 的个性化版本。
+## Requirements
 
-## 快速开始
+- Hugo Extended >= `0.146.0`
 
-1. 安装 Hugo。参考文档：[Hugo Docs's - Quick Start](https://gohugo.io/getting-started/quick-start/)
-   (需要 Hugo 版本 >= v0.125.3)
+## Install (Git Submodule)
 
-2. 创建 Hugo Site
-
-```powershell
-# 将下面 MySite 替换为你的网站名
-hugo new site MySite --format yml
-```
-
-更多命令参考：[Hugo Docs's - hugo new site command](https://gohugo.io/commands/hugo_new_site/#synopsis)
-
-3. 启用 Git
-
-```powershell
-cd MySite
-git init .
-```
-
-4. 安装 PaperMod-PE 主题
-
-```powershell
+```bash
 git submodule add --depth=1 https://github.com/DriftingBoats/Drifting-PaperMod.git themes/Drifting-PaperMod
+git submodule update --init --recursive
 ```
 
-5. 修改 Hugo 配置文件：
+## Enable Theme
 
 ```yaml
-theme: Drifitng-PaperMod
+theme:
+  - Drifting-PaperMod
 ```
 
-## 更新主题
+## Update Theme in Site Repo
 
-```powershell
+```bash
 git submodule update --remote --merge themes/Drifting-PaperMod
-
 git add themes/Drifting-PaperMod
-
-git commit -m "更新Drifting-PaperMod主题"
-
+git commit -m "theme: update Drifting-PaperMod"
 git push
 ```
 
-## 示例Hugo.yaml
+## Development
 
+```bash
+git clone https://github.com/DriftingBoats/Drifting-PaperMod.git
+```

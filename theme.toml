@@ -1,12 +1,9 @@
-# theme.toml template for a Hugo theme
-# See https://github.com/gohugoio/hugoThemes#themetoml for an example
-
-name = "PaperMod"
+name = "Drifting-PaperMod"
 license = "MIT"
-licenselink = "https://github.com/adityatelange/hugo-PaperMod/blob/master/LICENSE"
-description = "A fast, clean, responsive Hugo theme"
-homepage = "https://adityatelange.github.io/hugo-PaperMod/"
-demosite = "https://adityatelange.github.io/hugo-PaperMod/"
+licenselink = "https://github.com/DriftingBoats/Drifting-PaperMod/blob/main/LICENSE"
+description = "A personalized Hugo PaperMod fork used by Drifting Boats."
+homepage = "https://github.com/DriftingBoats/Drifting-PaperMod"
+demosite = "https://blog.drifting.boats/"
 tags = [
   "responsive",
   "simple",
@@ -15,8 +12,8 @@ tags = [
   "dark",
   "blog",
   "minimalist",
-  "highlight.js",
-  "search"
+  "search",
+  "papermod"
 ]
 features = [
   "responsive",
@@ -25,7 +22,7 @@ features = [
   "cover-image",
   "table-of-contents",
   "opengraph",
-  "highlight.js",
+  "highlight",
   "favicon",
   "archive",
   "share-icons",
@@ -41,12 +38,11 @@ features = [
 min_version = "0.146.0"
 
 [author]
-  name = "Aditya Telange"
-  homepage = "https://github.com/adityatelange/"
+  name = "DriftingBoats"
+  homepage = "https://github.com/DriftingBoats"
 
-# If porting an existing theme
 [original]
-  name = "Paper"
-  author = "nanxiaobei"
-  homepage = "https://github.com/nanxiaobei"
-  repo = "https://github.com/nanxiaobei/hugo-paper/"
+  name = "hugo-PaperMod"
+  author = "Aditya Telange"
+  homepage = "https://github.com/adityatelange"
+  repo = "https://github.com/adityatelange/hugo-PaperMod"
