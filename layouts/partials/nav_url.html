@@ -1,0 +1,18 @@
+{{- $url := . | default "" -}}
+{{- $isExternal := or
+    (strings.HasPrefix $url "http://")
+    (strings.HasPrefix $url "https://")
+    (strings.HasPrefix $url "//")
+    (strings.HasPrefix $url "mailto:")
+    (strings.HasPrefix $url "tel:")
+    (strings.HasPrefix $url "#")
+-}}
+{{- if $isExternal -}}
+{{- $url -}}
+{{- else -}}
+{{- $normalized := strings.TrimPrefix "/" $url -}}
+{{- if and (ne $normalized "") (not (strings.HasSuffix $normalized "/")) (not (in $normalized "?")) (not (in $normalized "#")) -}}
+{{- $normalized = printf "%s/" $normalized -}}
+{{- end -}}
+{{- $normalized | relLangURL -}}
+{{- end -}}

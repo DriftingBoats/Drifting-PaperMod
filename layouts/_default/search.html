@@ -35,7 +35,7 @@
     {{- $count := .Count }}
     {{- with site.GetPage (printf "/series/%s" $name) }}
     <li>
-        <a href="{{ .Permalink }}">{{ .Name }} <sup><strong><sup>{{ $count }}</sup></strong></sup> </a>
+        <a href="{{ .RelPermalink }}">{{ .Name }} <sup><strong><sup>{{ $count }}</sup></strong></sup> </a>
     </li>
     {{- end }}
     {{- end }}
@@ -52,7 +52,7 @@
     {{- $count := .Count }}
     {{- with site.GetPage (printf "/categories/%s" $name) }}
     <li>
-        <a href="{{ .Permalink }}">{{ .Name }} <sup><strong><sup>{{ $count }}</sup></strong></sup> </a>
+        <a href="{{ .RelPermalink }}">{{ .Name }} <sup><strong><sup>{{ $count }}</sup></strong></sup> </a>
     </li>
     {{- end }}
     {{- end }}
@@ -69,7 +69,7 @@
     {{- $count := .Count }}
     {{- with site.GetPage (printf "/tags/%s" $name) }}
     <li>
-        <a href="{{ .Permalink }}">{{ .Name }} <sup><strong><sup>{{ $count }}</sup></strong></sup> </a>
+        <a href="{{ .RelPermalink }}">{{ .Name }} <sup><strong><sup>{{ $count }}</sup></strong></sup> </a>
     </li>
     {{- end }}
     {{- end }}

@@ -4,6 +4,15 @@
 {{- $id := printf "audio-%s-%s-%d" (replace $rawSrc "." "-") (replace $pageTitle " " "-") now.UnixNano -}}
 {{- $resolvedSrc := $rawSrc -}}
 {{- $mediaType := "" -}}
+{{- $resourceMediaType := "" -}}
+{{- $mimeTypes := dict
+    ".mp3" "audio/mpeg"
+    ".m4a" "audio/mp4"
+    ".mp4" "audio/mp4"
+    ".wav" "audio/wav"
+    ".ogg" "audio/ogg"
+    ".flac" "audio/flac"
+-}}
 {{- $isDirectUrl := or
     (strings.HasPrefix $rawSrc "/")
     (strings.HasPrefix $rawSrc "//")
@@ -16,22 +25,18 @@
 {{- if and $rawSrc (not $isDirectUrl) -}}
   {{- with .Page.Resources.Get $rawSrc -}}
     {{- $resolvedSrc = .RelPermalink -}}
-    {{- $mediaType = .MediaType.Type -}}
+    {{- $resourceMediaType = .MediaType.Type -}}
   {{- else -}}
     {{- warnf "audio shortcode: unable to resolve bundle resource %q for %q" $rawSrc .Page.File.Path -}}
   {{- end -}}
 {{- end -}}
 
+{{- $mediaType = index $mimeTypes (lower (path.Ext $resolvedSrc)) | default "" -}}
 {{- if not $mediaType -}}
-  {{- $mimeTypes := dict
-      ".mp3" "audio/mpeg"
-      ".m4a" "audio/mp4"
-      ".mp4" "audio/mp4"
-      ".wav" "audio/wav"
-      ".ogg" "audio/ogg"
-      ".flac" "audio/flac"
-  -}}
   {{- $mediaType = index $mimeTypes (lower (path.Ext $rawSrc)) | default "" -}}
+{{- end -}}
+{{- if and (not $mediaType) $resourceMediaType -}}
+  {{- $mediaType = $resourceMediaType -}}
 {{- end -}}
 
 <div class="threads-audio-player" id="{{ $id }}">
@@ -242,53 +247,128 @@
 </div>
 
 <script>
-function togglePlay(id) {
-  const player = document.getElementById(id);
-  const audio = player.querySelector('audio');
+function getAudioSource(audio) {
+  if (!audio) {
+    return '';
+  }
+
+  const source = audio.querySelector('source');
+  return audio.currentSrc || (source ? source.getAttribute('src') : '') || '';
+}
+
+function setPlayerPlayingState(player, isPlaying) {
+  if (!player) {
+    return;
+  }
+
   const playIcon = player.querySelector('.play-icon');
   const pauseIcon = player.querySelector('.pause-icon');
+
+  if (playIcon) {
+    playIcon.style.display = isPlaying ? 'none' : 'block';
+  }
+  if (pauseIcon) {
+    pauseIcon.style.display = isPlaying ? 'block' : 'none';
+  }
+
+  player.classList.toggle('playing', isPlaying);
+}
+
+function clearWaveformState(player) {
+  if (!player) {
+    return;
+  }
+
+  const waveform = player.querySelector('.threads-waveform');
+  if (!waveform) {
+    return;
+  }
+
+  const bars = waveform.querySelectorAll('.threads-waveform-bar');
+  bars.forEach(bar => {
+    bar.classList.remove('active', 'played');
+  });
+}
+
+function resetPlayerState(player, options = {}) {
+  if (!player) {
+    return;
+  }
+
+  const resetTime = Boolean(options.resetTime);
+  setPlayerPlayingState(player, false);
+  clearWaveformState(player);
+
+  if (resetTime) {
+    const currentTimeSpan = player.querySelector('.current-time');
+    if (currentTimeSpan) {
+      currentTimeSpan.textContent = '0:00';
+    }
+  }
+}
+
+function handleAudioPlaybackError(player, audio, error) {
+  resetPlayerState(player);
+  console.error('Audio playback failed:', {
+    src: getAudioSource(audio),
+    error: error
+  });
+}
+
+function togglePlay(id) {
+  const player = document.getElementById(id);
+  if (!player) {
+    return;
+  }
+
+  const audio = player.querySelector('audio');
+  if (!audio) {
+    return;
+  }
 
   if (audio.paused) {
     document.querySelectorAll('.threads-audio-player').forEach(otherPlayer => {
       if (otherPlayer.id !== id) {
         const otherAudio = otherPlayer.querySelector('audio');
-        const otherPlayIcon = otherPlayer.querySelector('.play-icon');
-        const otherPauseIcon = otherPlayer.querySelector('.pause-icon');
-        if (!otherAudio.paused) {
+        if (otherAudio && !otherAudio.paused) {
           otherAudio.pause();
-          otherPlayIcon.style.display = 'block';
-          otherPauseIcon.style.display = 'none';
-          otherPlayer.classList.remove('playing');
+          resetPlayerState(otherPlayer);
         }
       }
     });
 
-    audio.play();
-    playIcon.style.display = 'none';
-    pauseIcon.style.display = 'block';
-    player.classList.add('playing');
+    const playPromise = audio.play();
+    const onPlaySuccess = function() {
+      setPlayerPlayingState(player, true);
 
-    const trackTitle = audio.getAttribute('title');
-    if (trackTitle && 'mediaSession' in navigator) {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: trackTitle,
-        artist: '',
-        album: '',
-        artwork: [
-          { src: '/img/avatar.png', sizes: '96x96', type: 'image/png' },
-          { src: '/img/avatar.png', sizes: '128x128', type: 'image/png' },
-          { src: '/img/avatar.png', sizes: '192x192', type: 'image/png' },
-          { src: '/img/avatar.png', sizes: '256x256', type: 'image/png' },
-          { src: '/img/avatar.png', sizes: '384x384', type: 'image/png' },
-          { src: '/img/avatar.png', sizes: '512x512', type: 'image/png' }
-        ]
+      const trackTitle = audio.getAttribute('title');
+      if (trackTitle && 'mediaSession' in navigator && 'MediaMetadata' in window) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: trackTitle,
+          artist: '',
+          album: '',
+          artwork: [
+            { src: '/img/avatar.png', sizes: '96x96', type: 'image/png' },
+            { src: '/img/avatar.png', sizes: '128x128', type: 'image/png' },
+            { src: '/img/avatar.png', sizes: '192x192', type: 'image/png' },
+            { src: '/img/avatar.png', sizes: '256x256', type: 'image/png' },
+            { src: '/img/avatar.png', sizes: '384x384', type: 'image/png' },
+            { src: '/img/avatar.png', sizes: '512x512', type: 'image/png' }
+          ]
+        });
+      }
+    };
+
+    if (playPromise && typeof playPromise.then === 'function') {
+      playPromise.then(onPlaySuccess).catch(error => {
+        handleAudioPlaybackError(player, audio, error);
       });
+    } else {
+      onPlaySuccess();
     }
   } else {
     audio.pause();
-    playIcon.style.display = 'block';
-    pauseIcon.style.display = 'none';
-    player.classList.remove('playing');
+    resetPlayerState(player);
   }
 }
 
@@ -300,10 +380,22 @@ function formatTime(seconds) {
 
 function seekTo(event, id) {
   const player = document.getElementById(id);
+  if (!player) {
+    return;
+  }
+
   const audio = player.querySelector('audio');
   const waveform = player.querySelector('.threads-waveform');
+  if (!audio || !waveform) {
+    return;
+  }
+
   const rect = waveform.getBoundingClientRect();
-  const percent = (event.clientX - rect.left) / rect.width;
+  if (!rect.width || !audio.duration || isNaN(audio.duration)) {
+    return;
+  }
+
+  const percent = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
   audio.currentTime = percent * audio.duration;
 }
 
@@ -417,24 +509,15 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     audio.addEventListener('ended', function() {
-      const playIcon = player.querySelector('.play-icon');
-      const pauseIcon = player.querySelector('.pause-icon');
-      playIcon.style.display = 'block';
-      pauseIcon.style.display = 'none';
-      player.classList.remove('playing');
-      currentTimeSpan.textContent = '0:00';
-
-      const bars = waveform.querySelectorAll('.threads-waveform-bar');
-      bars.forEach(bar => {
-        bar.classList.remove('active', 'played');
-      });
+      resetPlayerState(player, { resetTime: true });
     });
 
     audio.addEventListener('pause', function() {
-      const bars = waveform.querySelectorAll('.threads-waveform-bar');
-      bars.forEach(bar => {
-        bar.classList.remove('active', 'played');
-      });
+      clearWaveformState(player);
+    });
+
+    audio.addEventListener('error', function() {
+      handleAudioPlaybackError(player, audio, audio.error);
     });
   });
 });

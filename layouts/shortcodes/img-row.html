@@ -1,3 +1,12 @@
-<div class="image-row {{ if .Get "type" }}image-row-{{ .Get "type" }}{{ else }}image-row-1col{{ end }}">
-  {{ .Inner | markdownify }}
+{{- $type := .Get "type" | default "1col" -}}
+{{- $inner := .Inner | strings.TrimSpace -}}
+<div class="image-row image-row-{{ $type }}">
+  {{- range (split $inner "\n") }}
+    {{- $item := . | strings.TrimSpace -}}
+    {{- if $item }}
+    <div class="image-row__item">
+      {{- $.Page.RenderString (dict "display" "block") $item -}}
+    </div>
+    {{- end }}
+  {{- end }}
 </div>

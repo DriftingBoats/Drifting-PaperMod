@@ -1,0 +1,126 @@
+.post-content .image-row__item > p,
+.moment-body .image-row__item > p {
+    margin: 0 !important;
+}
+
+.post-content .image-row__item > p > .post-img-view,
+.moment-body .image-row__item > p > .post-img-view {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+}
+
+.dark .post-content .image-row__item > p > .post-img-view,
+.dark .moment-body .image-row__item > p > .post-img-view {
+    background: transparent !important;
+}
+
+.post-content .image-row__item > p > .post-img-view .post-img-link,
+.moment-body .image-row__item > p > .post-img-view .post-img-link {
+    line-height: 0;
+    box-shadow: none !important;
+    text-decoration: none !important;
+}
+
+.post-content .image-row-1col .image-row__item > p > .post-img-view .post-img-link,
+.moment-body .image-row-1col .image-row__item > p > .post-img-view .post-img-link {
+    display: inline-block !important;
+    max-width: 100% !important;
+}
+
+.post-content .image-row-1col .image-row__item > p > .post-img-view .responsive-image,
+.moment-body .image-row-1col .image-row__item > p > .post-img-view .responsive-image {
+    display: block !important;
+    max-width: 100% !important;
+    width: auto !important;
+    height: auto !important;
+    max-height: 66vh !important;
+    margin: 0 auto !important;
+    border-radius: 10px !important;
+    object-fit: contain !important;
+}
+
+.post-content .image-row-2col .image-row__item,
+.post-content .image-row-3col .image-row__item,
+.moment-body .image-row-2col .image-row__item,
+.moment-body .image-row-3col .image-row__item {
+    aspect-ratio: 1 / 1;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+}
+
+.post-content .image-row-2col .image-row__item > p,
+.post-content .image-row-3col .image-row__item > p,
+.post-content .image-row-2col .image-row__item > p > .post-img-view,
+.post-content .image-row-3col .image-row__item > p > .post-img-view,
+.moment-body .image-row-2col .image-row__item > p,
+.moment-body .image-row-3col .image-row__item > p,
+.moment-body .image-row-2col .image-row__item > p > .post-img-view,
+.moment-body .image-row-3col .image-row__item > p > .post-img-view {
+    height: 100%;
+}
+
+.post-content .image-row-2col .image-row__item > p > .post-img-view .post-img-link,
+.post-content .image-row-3col .image-row__item > p > .post-img-view .post-img-link,
+.moment-body .image-row-2col .image-row__item > p > .post-img-view .post-img-link,
+.moment-body .image-row-3col .image-row__item > p > .post-img-view .post-img-link {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    aspect-ratio: 1 / 1 !important;
+    overflow: hidden !important;
+    border-radius: 10px !important;
+}
+
+.post-content .image-row-2col .image-row__item > p > .post-img-view .responsive-image,
+.post-content .image-row-3col .image-row__item > p > .post-img-view .responsive-image,
+.moment-body .image-row-2col .image-row__item > p > .post-img-view .responsive-image,
+.moment-body .image-row-3col .image-row__item > p > .post-img-view .responsive-image {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    object-fit: cover !important;
+}
+
+.post-content .image-row,
+.moment-body .image-row {
+    gap: 6px !important;
+}
+
+.moment-content-wrapper .image-row {
+    margin: 0.85rem 6px 0.95rem !important;
+}
+
+@media screen and (max-width: 768px) {
+    .post-content .image-row__item > p > .post-img-view,
+    .moment-body .image-row__item > p > .post-img-view {
+        padding: 0 !important;
+        border-radius: 8px !important;
+    }
+
+    .post-content .image-row-1col .image-row__item > p > .post-img-view .responsive-image,
+    .moment-body .image-row-1col .image-row__item > p > .post-img-view .responsive-image,
+    .post-content .image-row-2col .image-row__item > p > .post-img-view .post-img-link,
+    .post-content .image-row-3col .image-row__item > p > .post-img-view .post-img-link,
+    .moment-body .image-row-2col .image-row__item > p > .post-img-view .post-img-link,
+    .moment-body .image-row-3col .image-row__item > p > .post-img-view .post-img-link {
+        border-radius: 8px !important;
+    }
+
+    .post-content .image-row,
+    .moment-body .image-row {
+        gap: 5px !important;
+    }
+
+    .moment-content-wrapper .image-row {
+        margin-inline: 5px !important;
+    }
+}

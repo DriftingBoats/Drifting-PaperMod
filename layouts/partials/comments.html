@@ -15,7 +15,7 @@
             }
 
             // 动态导入 Waline
-            import('https://unpkg.com/@waline/client@v3/dist/waline.js')
+            import('{{ "/vendor/waline/waline.js" | relURL }}')
                 .then(({ init }) => {
                     walineContainers.forEach(container => {
                         // 避免重复初始化
@@ -30,16 +30,11 @@
                         }
 
                         try {
-                            container.__waline__ = init({
+                            const walineOptions = {
                                 el: container,
                                 serverURL: '{{ .Site.Params.waline.serverURL }}',
                                 lang: '{{ .Site.Params.waline.lang }}',
                                 visitor: '{{ .Site.Params.waline.visitor | default "匿名者" }}',
-                                emoji: [
-                                    {{- range .Site.Params.waline.emoji }}
-                                        '{{ . }}',
-                                    {{- end }}
-                                ],
                                 requiredMeta: [
                                     {{- range .Site.Params.waline.requiredMeta }}
                                         '{{ . }}',
@@ -51,7 +46,15 @@
                                 },
                                 path: path,
                                 dark: '{{ .Site.Params.waline.dark | default "body.dark" }}'
-                            });
+                            };
+                            {{- with .Site.Params.waline.emoji }}
+                            walineOptions.emoji = [
+                                {{- range . }}
+                                    '{{ . }}',
+                                {{- end }}
+                            ];
+                            {{- end }}
+                            container.__waline__ = init(walineOptions);
                             console.log('Waline 初始化成功:', path);
                         } catch (error) {
                             console.error('Waline 初始化失败:', error);

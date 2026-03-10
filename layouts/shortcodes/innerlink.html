@@ -4,7 +4,7 @@
     {{ $url := .Get "src" }}
     {{ with .Site.GetPage $url }}
     <div style="font-size: 22px; font-weight: 600">
-        <a target="_blank" href="{{ .Permalink }}" style="box-shadow: none">{{ .Title }}</a>
+        <a target="_blank" href="{{ .RelPermalink }}" style="box-shadow: none">{{ .Title }}</a>
     </div>
     <span style="font-size: 14px; color: #999">
         日期: {{ .Date.Format ( default "2006-01-02") }}

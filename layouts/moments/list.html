@@ -1,14 +1,5 @@
 {{ define "main" }}
 
-    <!-- 如果需要引入 moments.css，请保持路径一致或根据自己项目结构调整 -->
-    {{ $css := resources.Get "css/extended/moments.css" | minify | fingerprint }}
-    <link
-        crossorigin="anonymous"
-        href="{{ $css.RelPermalink }}"
-        integrity="{{ $css.Data.Integrity }}"
-        rel="stylesheet"
-    />
-
     {{ $dateformat := .Params.DateFormat }}
     {{ $momentPages := .RegularPages.ByDate.Reverse }}
 
@@ -488,11 +479,6 @@
             serverURL: '{{ .Site.Params.waline.serverURL }}',
             lang: '{{ .Site.Params.waline.lang | default "zh-CN" }}',
             visitor: '{{ .Site.Params.waline.visitor | default "匿名者" }}',
-            emoji: [
-                {{- range .Site.Params.waline.emoji }}
-                    '{{ . }}',
-                {{- end }}
-            ],
             requiredMeta: [
                 {{- range .Site.Params.waline.requiredMeta }}
                     '{{ . }}',
@@ -505,6 +491,13 @@
             dark: '{{ .Site.Params.waline.dark | default "body.dark" }}',
             reaction: false
         };
+        {{- with .Site.Params.waline.emoji }}
+        walineParams.emoji = [
+            {{- range . }}
+                '{{ . }}',
+            {{- end }}
+        ];
+        {{- end }}
         
         // 点击"添加评论"按钮时，显示对应卡片下的评论区
         window.showComment = function(element) {
@@ -541,20 +534,23 @@
                 commentElement.classList.add('active');
 
                 // 动态导入并初始化 Waline
-                import('https://unpkg.com/@waline/client@v3/dist/waline.js')
+                import('{{ "/vendor/waline/waline.js" | relURL }}')
                     .then(({ init }) => {
-                        init({
+                        const walineOptions = {
                             el: commentElement,
                             serverURL: walineParams.serverURL,
                             lang: walineParams.lang,
                             visitor: walineParams.visitor,
-                            emoji: walineParams.emoji,
                             requiredMeta: walineParams.requiredMeta,
                             locale: walineParams.locale,
                             path: path,
                             dark: walineParams.dark,
                             reaction: false
-                        });
+                        };
+                        if (walineParams.emoji && walineParams.emoji.length > 0) {
+                            walineOptions.emoji = walineParams.emoji;
+                        }
+                        init(walineOptions);
                         console.log('Moments Waline 初始化成功:', path);
                     })
                     .catch(error => {

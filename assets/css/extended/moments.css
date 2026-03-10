@@ -42,7 +42,7 @@ margin-top: 1.5rem;
 /* 卡片：使用CSS变量 */
 .moment-card {
 width: 100%;
-max-width: 800px;        /* 每张卡片最多800px */
+max-width: 100%;
 margin: 0 auto;          /* 居中 */
 position: relative;
 background: var(--card-bg);
@@ -112,32 +112,48 @@ margin-left: 0; /* 确保整体左对齐 */
 list-style-position: inside; /* 确保序号在内容外部显示 */
 }
 
-.image-row {
-display: grid;
-gap: 0.4rem; /* 默认图片之间的间距 */
-margin: 1rem 0; /* 上下与其他内容的间距 */
+.moment-content-wrapper .image-row {
+margin: 0.85rem var(--img-row-outer-gap, 6px) 0.95rem;
 }
 
-.image-row-1col {
-grid-template-columns: repeat(1, 1fr); /* 单列布局 */
+.moment-content-wrapper .image-row:first-child {
+margin-top: 0.35rem;
 }
 
-.image-row-2col {
-grid-template-columns: repeat(2, 1fr); /* 双列布局 */
-gap: 0.4rem; /* 自定义两列间距 */
+.moment-content-wrapper .image-row:last-child {
+margin-bottom: 0.2rem;
 }
 
-.image-row-3col {
-grid-template-columns: repeat(3, 1fr); /* 三列布局 */
-gap: 0.2rem; /* 自定义三列间距 */
+.moment-content-wrapper > p > .post-img-view:only-child {
+display: block;
+margin: 0.85rem 0;
+overflow: hidden;
+border-radius: 12px;
+background: var(--img-row-tile-bg, rgba(15, 23, 42, 0.04));
 }
 
-.image-row img {
-width: 100%;                /* 图片宽度占满格子 */
-aspect-ratio: 1 / 1;        /* 强制为正方形 */
-object-fit: cover;          /* 裁切图片内容，居中显示 */
-display: block;             /* 避免周围多余间隙 */
-border-radius: 2px;         /* 可选：增加圆角 */
+.moment-content-wrapper > p > .post-img-view:only-child .post-img-link {
+display: inline-block;
+max-width: 100%;
+line-height: 0;
+}
+
+.moment-content-wrapper > p > .post-img-view:only-child .responsive-image {
+display: block;
+max-width: 100%;
+width: auto;
+height: auto;
+max-height: 66vh;
+margin: 0;
+border-radius: 0;
+}
+
+.moment-content-wrapper > p > .post-img-view:only-child .post-img-caption {
+display: block;
+padding: 0.5rem 0.7rem 0.7rem;
+color: var(--secondary);
+font-size: 0.8rem;
+line-height: 1.45;
 }
 
 /* 标签 */
@@ -315,7 +331,7 @@ go.moment-loading {
 /* 修复提示容器样式（新增） */
 .scroll-hint-container {
   width: 100%;
-  max-width: 800px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 1rem;
   font-size: 0.95em;

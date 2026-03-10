@@ -2,7 +2,7 @@
 {{- $hasTOC := strings.Contains $toc "<li>" -}}
 {{- if $hasTOC -}}
 {{- $tocTitle := i18n "toc" | default "Table of Contents" -}}
-<aside class="entry-sidebar entry-sidebar--outside" aria-labelledby="post-toc-label">
+<aside class="entry-sidebar entry-sidebar--toc" aria-labelledby="post-toc-label">
     <div class="entry-toc entry-toc--sidebar">
         <p class="entry-toc__eyebrow" id="post-toc-label">{{- $tocTitle -}}</p>
         <div class="entry-toc__scroll">
@@ -17,11 +17,7 @@
     "use strict";
 
     function initPostToc() {
-        if (window.matchMedia("(max-width: 767px)").matches) {
-            return;
-        }
-
-        var tocRoot = document.querySelector(".entry-sidebar--outside");
+        var tocRoot = document.querySelector(".entry-sidebar--toc");
         if (!tocRoot) {
             return;
         }

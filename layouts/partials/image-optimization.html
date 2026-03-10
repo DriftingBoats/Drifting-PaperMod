@@ -25,13 +25,13 @@
   // Fancybox延迟加载
   function loadFancybox() {
     const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js';
+    script.src = '{{ "/vendor/fancybox/fancybox.umd.js" | relURL }}';
     script.async = true;
     document.body.appendChild(script);
 
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = 'https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css';
+    link.href = '{{ "/vendor/fancybox/fancybox.css" | relURL }}';
     document.head.appendChild(link);
 
     script.onload = function() {

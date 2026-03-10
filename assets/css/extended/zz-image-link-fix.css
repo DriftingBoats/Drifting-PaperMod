@@ -1,0 +1,9 @@
+.post-content a.post-img-link,
+.moment-body a.post-img-link,
+.moment-content-wrapper a.post-img-link,
+.post-img-view > a.post-img-link {
+    box-shadow: none;
+    text-decoration: none;
+    line-height: 0;
+    vertical-align: top;
+}

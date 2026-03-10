@@ -3,6 +3,7 @@
     --content-gap: 20px;
     --nav-width: 1024px;
     --main-width: 720px;
+    --shell-width: calc(var(--nav-width) + var(--gap) * 2);
     --header-height: 60px;
     --footer-height: 60px;
     --radius: 8px;
