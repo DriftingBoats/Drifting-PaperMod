@@ -21,49 +21,4 @@
       });
     }
   });
-
-  // Fancybox延迟加载
-  function loadFancybox() {
-    const script = document.createElement('script');
-    script.src = '{{ "/vendor/fancybox/fancybox.umd.js" | relURL }}';
-    script.async = true;
-    document.body.appendChild(script);
-
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = '{{ "/vendor/fancybox/fancybox.css" | relURL }}';
-    document.head.appendChild(link);
-
-    script.onload = function() {
-      Fancybox.bind('[data-fancybox]', {
-        Images: {
-          protected: true,
-        },
-        Toolbar: {
-          display: [
-            { id: 'prev', position: 'center' },
-            { id: 'counter', position: 'center' },
-            { id: 'next', position: 'center' },
-            'zoom',
-            'slideshow',
-            'fullscreen',
-            'download',
-            'close',
-          ],
-        },
-      });
-    };
-  }
-
-  // 当用户滚动到图片附近时才加载Fancybox
-  let fancyboxLoaded = false;
-  window.addEventListener('scroll', function() {
-    if (!fancyboxLoaded && document.querySelector('[data-fancybox]')) {
-      const rect = document.querySelector('[data-fancybox]').getBoundingClientRect();
-      if (rect.top < window.innerHeight + 500) {
-        loadFancybox();
-        fancyboxLoaded = true;
-      }
-    }
-  });
 </script>

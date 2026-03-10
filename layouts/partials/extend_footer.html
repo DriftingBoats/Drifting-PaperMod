@@ -1,3 +1,36 @@
-{{- /* Footer custom content area start */ -}}
-{{- /*     Insert any custom code web-analytics, resources, etc. here */ -}}
-{{- /* Footer custom content area end */ -}}
+{{- if site.Params.fancybox }}
+<script src="{{ "/vendor/fancybox/fancybox.umd.js" | relURL }}"></script>
+<script>
+  (function () {
+    const selector = 'a.post-img-link[data-fancybox]';
+
+    function initFancybox() {
+      if (!window.Fancybox || !document.body || !document.querySelector(selector)) {
+        return;
+      }
+
+      Fancybox.bind(document.body, selector, {
+        groupAttr: 'data-fancybox',
+        groupAll: false,
+        Hash: false,
+        Images: {
+          protected: true
+        },
+        Toolbar: {
+          display: {
+            left: [],
+            middle: ['prev', 'counter', 'next'],
+            right: ['iterateZoom', 'slideshow', 'fullscreen', 'download', 'close']
+          }
+        }
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initFancybox, { once: true });
+    } else {
+      initFancybox();
+    }
+  })();
+</script>
+{{- end }}

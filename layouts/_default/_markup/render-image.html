@@ -1,10 +1,14 @@
 {{- $src := .Destination | safeURL -}}
 {{- $alt := .Text | plainify -}}
 {{- $title := .Title | plainify -}}
+{{- $galleryID := printf "gallery-%s" (.Page.RelPermalink | urlize) -}}
+{{- with .Page.File -}}
+  {{- $galleryID = printf "gallery-%s" .UniqueID -}}
+{{- end -}}
 
 <span class="post-img-view">
     {{- if .Page.Site.Params.fancybox -}}
-    <a class="post-img-link" data-fancybox="gallery" href="{{ $src }}">
+    <a class="post-img-link" data-fancybox="{{ $galleryID }}" href="{{ $src }}">
     {{- end -}}
         <img
             class="responsive-image"
