@@ -2,18 +2,15 @@
 {{- $hasTOC := strings.Contains $toc "<li>" -}}
 {{- if $hasTOC -}}
 {{- $tocTitle := i18n "toc" | default "Table of Contents" -}}
-<aside class="entry-sidebar entry-sidebar--outside" aria-label="{{- $tocTitle -}}">
-    <details class="entry-toc entry-toc--sidebar"{{ if (.Param "TocOpen") }} open{{ end }}>
-        <summary class="entry-toc__toggle" accesskey="c" title="(Alt + C)">
-            {{- $tocTitle -}}
-        </summary>
-        <div class="entry-toc__inner">
-            <h2 class="entry-toc__title"><a href="#post-top">{{ .Title }}</a></h2>
+<aside class="entry-sidebar entry-sidebar--outside" aria-labelledby="post-toc-label">
+    <div class="entry-toc entry-toc--sidebar">
+        <p class="entry-toc__eyebrow" id="post-toc-label">{{- $tocTitle -}}</p>
+        <div class="entry-toc__scroll">
             <div class="entry-toc__body">
                 {{- $toc -}}
             </div>
         </div>
-    </details>
+    </div>
 </aside>
 <script>
 (function () {
@@ -75,7 +72,7 @@
             return;
         }
 
-        var tocInner = tocRoot.querySelector(".entry-toc__inner");
+        var tocScroll = tocRoot.querySelector(".entry-toc__scroll");
         var activeLink = null;
         var fallbackTicking = false;
 
@@ -86,21 +83,25 @@
 
             if (activeLink) {
                 activeLink.classList.remove("is-active");
+                activeLink.removeAttribute("aria-current");
             }
 
             activeLink = link;
             activeLink.classList.add("is-active");
+            activeLink.setAttribute("aria-current", "location");
 
-            if (!tocInner || tocInner.scrollHeight <= tocInner.clientHeight) {
+            if (!tocScroll || tocScroll.scrollHeight <= tocScroll.clientHeight) {
                 return;
             }
 
             var targetTop =
-                activeLink.offsetTop -
-                tocInner.clientHeight / 2 +
+                tocScroll.scrollTop +
+                activeLink.getBoundingClientRect().top -
+                tocScroll.getBoundingClientRect().top -
+                tocScroll.clientHeight / 2 +
                 activeLink.clientHeight / 2;
 
-            tocInner.scrollTo({
+            tocScroll.scrollTo({
                 top: Math.max(0, targetTop),
                 behavior: "auto"
             });

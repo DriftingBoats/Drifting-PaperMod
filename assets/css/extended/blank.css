@@ -3,3 +3,32 @@ This is just a placeholder blank stylesheet so as to support adding custom style
 
 Read https://github.com/adityatelange/hugo-PaperMod/wiki/FAQs#bundling-custom-css-with-themes-assets for more info
 */
+
+.post-img-view {
+    display: block;
+    width: 100%;
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.post-img-link {
+    display: inline-block;
+    max-width: 100%;
+}
+
+.post-img-view .responsive-image {
+    display: block;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    max-height: 33vh;
+    margin: 0 auto;
+}
+
+.post-img-caption {
+    display: block;
+    margin-top: 0.5rem;
+    color: var(--secondary);
+    font-size: 14px;
+    line-height: 1.5;
+}

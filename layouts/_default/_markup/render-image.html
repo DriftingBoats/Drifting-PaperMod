@@ -1,36 +1,23 @@
-<!DOCTYPE html>
-<html lang="zh">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Image</title>
-    <style>
-        .post-img-view {
-            text-align: center;
-        }
-        .responsive-image {
-            display: block;
-            margin: 0 auto;
-        }
-    </style>
-</head>
-<body>
-    {{ if .Page.Site.Params.fancybox }}
-    <div class="post-img-view">
-        <a data-fancybox="gallery" href="{{ .Destination | safeURL }}">
-            <img class="responsive-image" src="{{ .Destination | safeURL }}" alt="{{ .Text }}" {{ with .Title}} title="{{ . }}"{{ end }} style="margin: 0 auto;"/>
-        </a>
-    </div>
-    {{ end }}
+{{- $src := .Destination | safeURL -}}
+{{- $alt := .Text | plainify -}}
+{{- $title := .Title | plainify -}}
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var images = document.querySelectorAll(".responsive-image");
-            var maxHeight = window.innerHeight / 3;
-            images.forEach(function(image) {
-                image.style.maxHeight = maxHeight + "px";
-            });
-        });
-    </script>
-</body>
-</html>
+<span class="post-img-view">
+    {{- if .Page.Site.Params.fancybox -}}
+    <a class="post-img-link" data-fancybox="gallery" href="{{ $src }}">
+    {{- end -}}
+        <img
+            class="responsive-image"
+            loading="lazy"
+            decoding="async"
+            src="{{ $src }}"
+            alt="{{ $alt }}"
+            {{- with $title }} title="{{ . }}"{{ end -}}
+        >
+    {{- if .Page.Site.Params.fancybox -}}
+    </a>
+    {{- end -}}
+    {{- with $title -}}
+    <span class="post-img-caption">{{ . }}</span>
+    {{- end -}}
+</span>
