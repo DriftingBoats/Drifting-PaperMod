@@ -1,6 +1,43 @@
+{{- $rawSrc := or (.Get "src") (.Get 0) "" -}}
+{{- $rawPoster := or (.Get "poster") (.Get 1) "" -}}
+{{- $resolvedSrc := $rawSrc -}}
+{{- $resolvedPoster := $rawPoster -}}
+
+{{- $isDirectSrc := or
+    (strings.HasPrefix $rawSrc "/")
+    (strings.HasPrefix $rawSrc "//")
+    (strings.HasPrefix $rawSrc "http://")
+    (strings.HasPrefix $rawSrc "https://")
+    (strings.HasPrefix $rawSrc "data:")
+    (strings.HasPrefix $rawSrc "blob:")
+-}}
+{{- if and $rawSrc (not $isDirectSrc) -}}
+  {{- with .Page.Resources.Get $rawSrc -}}
+    {{- $resolvedSrc = .RelPermalink -}}
+  {{- else -}}
+    {{- warnf "video shortcode: unable to resolve bundle resource %q for %q" $rawSrc .Page.File.Path -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $isDirectPoster := or
+    (strings.HasPrefix $rawPoster "/")
+    (strings.HasPrefix $rawPoster "//")
+    (strings.HasPrefix $rawPoster "http://")
+    (strings.HasPrefix $rawPoster "https://")
+    (strings.HasPrefix $rawPoster "data:")
+    (strings.HasPrefix $rawPoster "blob:")
+-}}
+{{- if and $rawPoster (not $isDirectPoster) -}}
+  {{- with .Page.Resources.Get $rawPoster -}}
+    {{- $resolvedPoster = .RelPermalink -}}
+  {{- else -}}
+    {{- warnf "video shortcode: unable to resolve poster resource %q for %q" $rawPoster .Page.File.Path -}}
+  {{- end -}}
+{{- end -}}
+
 <div style="position: relative; width: 100%; height: 0; padding-bottom: 66%; margin: auto; overflow: hidden; text-align: center;">
-  <video controls preload="metadata" poster="{{ .Get 1 }}" style="position: absolute; width: 100%; height: 100%; left: 0; top: 0; object-fit: contain;">
-    <source src="{{ .Get 0 }}" type="video/mp4">
+  <video controls preload="metadata"{{ if $resolvedPoster }} poster="{{ $resolvedPoster }}"{{ end }} style="position: absolute; width: 100%; height: 100%; left: 0; top: 0; object-fit: contain;">
+    <source src="{{ $resolvedSrc }}" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 </div>
