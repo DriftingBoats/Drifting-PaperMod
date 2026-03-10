@@ -1,7 +1,7 @@
 .main {
     position: relative;
     min-height: calc(100vh - var(--header-height) - var(--footer-height));
-    max-width: var(--shell-width);
+    max-width: var(--content-shell-width);
     margin: auto;
     padding: var(--gap);
     padding-top: calc(var(--header-height) + var(--gap));

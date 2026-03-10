@@ -1,9 +1,12 @@
 :root {
     --gap: 24px;
     --content-gap: 20px;
+    --content-image-max-height: 66vh;
     --nav-width: 1024px;
     --main-width: 720px;
-    --shell-width: calc(var(--nav-width) + var(--gap) * 2);
+    --nav-shell-width: calc(var(--nav-width) + var(--gap) * 2);
+    --content-shell-width: calc(var(--nav-shell-width) - 48px);
+    --shell-width: var(--nav-shell-width);
     --header-height: 60px;
     --footer-height: 60px;
     --radius: 8px;

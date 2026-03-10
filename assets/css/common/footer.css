@@ -5,7 +5,7 @@
 }
 
 .footer {
-    max-width: var(--shell-width);
+    max-width: var(--nav-shell-width);
     margin: auto;
     padding: calc((var(--footer-height) - var(--gap)) / 2) var(--gap);
     text-align: center;
