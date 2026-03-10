@@ -145,3 +145,5 @@
 
 {{ $codeJS := resources.Get "js/code.js" | minify | fingerprint }}
 <script defer src="{{ $codeJS.RelPermalink }}" integrity="{{ $codeJS.Data.Integrity }}"></script>
+{{ $imageLoadingJS := resources.Get "js/image-loading.js" | minify | fingerprint }}
+<script defer src="{{ $imageLoadingJS.RelPermalink }}" integrity="{{ $imageLoadingJS.Data.Integrity }}"></script>

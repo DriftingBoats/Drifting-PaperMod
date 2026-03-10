@@ -74,18 +74,6 @@
                                 <div class="moment-content-wrapper">
                                     {{ .Content | safeHTML }}
                                 </div>
-                                <div class="moment-loading">
-                                    <div class="loading-spinner"></div>
-                                    <div class="loading-text">图片加载中...</div>
-                                    <div class="skeleton-content">
-                                        <div class="skeleton-line" style="width: 90%"></div>
-                                        <div class="skeleton-line" style="width: 60%"></div>
-                                    </div>
-                                </div>
-                                <div class="moment-error" style="display: none;">
-                                    <span>图片加载失败</span>
-                                    <button onclick="retryLoad(this)">重试</button>
-                                </div>
                             </div>
 
                             <!-- 标签（如果有） -->
@@ -228,91 +216,40 @@
                 });
             };
 
-            document.querySelectorAll('.moment-card').forEach(normalizeMomentUrls);
-
-            // 图片懒加载和预加载处理
-            const imageObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        const wrapper = img.closest('.moment-content-wrapper');
-                        const loadingEl = wrapper.nextElementSibling;
-                        const errorEl = loadingEl.nextElementSibling;
-
-                        // 显示加载状态
-                        loadingEl.style.display = 'flex';
-                        errorEl.style.display = 'none';
-
-                        // 创建新的Image对象用于预加载
-                        const tempImg = new Image();
-                        tempImg.onload = function() {
-                            img.src = img.dataset.src;
-                            img.classList.add('loaded');
-                            loadingEl.style.display = 'none';
-                            observer.unobserve(img);
-                        };
-                        tempImg.onerror = function() {
-                            loadingEl.style.display = 'none';
-                            errorEl.style.display = 'block';
-                        };
-                        tempImg.src = img.dataset.src;
+            const prepareMomentImages = (card) => {
+                card.querySelectorAll('.moment-content-wrapper img').forEach(img => {
+                    if (img.dataset.momentPrepared === 'true') {
+                        return;
                     }
-                });
-            }, {
-                rootMargin: '50px 0px',
-                threshold: 0.1
-            });
 
-            // 处理所有图片元素
-            document.querySelectorAll('.moment-content-wrapper').forEach(wrapper => {
-                const loadingEl = wrapper.nextElementSibling;
-                const images = wrapper.querySelectorAll('img');
-                
-                if (images.length === 0) {
-                    loadingEl.style.display = 'none';
-                    return;
-                }
+                    const currentSrc = img.getAttribute('src');
+                    const currentSrcset = img.getAttribute('srcset');
 
-                let loadedImages = 0;
-                images.forEach(img => {
-                    if (img.src) {
-                        img.dataset.src = img.src;
-                        img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // 透明占位图
-                        imageObserver.observe(img);
-                        
-                        // 监听图片加载完成
-                        img.onload = () => {
-                            loadedImages++;
-                            if (loadedImages === images.length) {
-                                loadingEl.style.display = 'none';
-                            }
-                        };
+                    if (currentSrc) {
+                        img.dataset.src = currentSrc;
                     }
+
+                    if (currentSrcset) {
+                        img.dataset.srcset = currentSrcset;
+                    }
+
+                    img.dataset.retryable = 'true';
+                    img.dataset.momentPrepared = 'true';
+                    img.loading = 'lazy';
+                    img.decoding = 'async';
                 });
-            });
-
-            // 重试加载功能
-            window.retryLoad = function(button) {
-                const errorEl = button.closest('.moment-error');
-                const loadingEl = errorEl.previousElementSibling;
-                const wrapper = loadingEl.previousElementSibling;
-                const img = wrapper.querySelector('img');
-
-                errorEl.style.display = 'none';
-                loadingEl.style.display = 'flex';
-
-                const tempImg = new Image();
-                tempImg.onload = function() {
-                    img.src = img.dataset.src;
-                    img.classList.add('loaded');
-                    loadingEl.style.display = 'none';
-                };
-                tempImg.onerror = function() {
-                    loadingEl.style.display = 'none';
-                    errorEl.style.display = 'block';
-                };
-                tempImg.src = img.dataset.src;
             };
+
+            const refreshMomentImages = (root) => {
+                if (window.ImageLoading && typeof window.ImageLoading.refreshImages === 'function') {
+                    window.ImageLoading.refreshImages(root);
+                }
+            };
+
+            document.querySelectorAll('.moment-card').forEach(card => {
+                normalizeMomentUrls(card);
+                prepareMomentImages(card);
+            });
 
             // 新增分页相关变量
             let currentPage = 1;
@@ -325,9 +262,6 @@
             loadingHint.className = 'scroll-hint-container';
             loadingHint.innerHTML = '<div class="loading-hint">加载更多...</div>';
             document.querySelector('.moments-list').after(loadingHint);
-            
-            // 页面加载完成后立即显示内容
-            displayMoments();
 
             // 显示分页内容的方法
             function displayMoments() {
@@ -338,10 +272,7 @@
                 const start = (currentPage - 1) * pageSize;
                 filteredMoments.slice(start, end).forEach(moment => {
                     moment.style.display = 'block';
-                    // 触发图片懒加载重新检查
-                    moment.querySelectorAll('img[data-src]').forEach(img => {
-                        imageObserver.observe(img);
-                    });
+                    refreshMomentImages(moment);
                 });
 
                 // 更新底部提示

@@ -1,0 +1,42 @@
+{{- $src := .src | default "" -}}
+{{- $page := .page -}}
+{{- $defaultAspectRatio := .defaultAspectRatio | default "16 / 10" -}}
+{{- $result := dict
+    "src" ($src | safeURL)
+    "width" 0
+    "height" 0
+    "stageWidth" "100%"
+    "aspectRatio" $defaultAspectRatio
+    "resolved" false
+-}}
+
+{{- if and $page $src -}}
+  {{- $parsed := urls.Parse $src -}}
+  {{- $resourcePath := $parsed.Path | default $src -}}
+  {{- $resourcePath = replace $resourcePath "%20" " " -}}
+  {{- if and (not $parsed.IsAbs) (not (hasPrefix $resourcePath "/")) -}}
+    {{- with $page.Resources.GetMatch $resourcePath -}}
+      {{- $result = merge $result (dict
+          "src" .RelPermalink
+          "width" .Width
+          "height" .Height
+          "stageWidth" (printf "%dpx" .Width)
+          "aspectRatio" (printf "%d / %d" .Width .Height)
+          "resolved" true
+      ) -}}
+    {{- else -}}
+      {{- with $page.Resources.GetMatch (printf "*%s" (path.Base $resourcePath)) -}}
+        {{- $result = merge $result (dict
+            "src" .RelPermalink
+            "width" .Width
+            "height" .Height
+            "stageWidth" (printf "%dpx" .Width)
+            "aspectRatio" (printf "%d / %d" .Width .Height)
+            "resolved" true
+        ) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- return $result -}}

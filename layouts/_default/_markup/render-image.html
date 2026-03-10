@@ -1,26 +1,35 @@
-{{- $src := .Destination | safeURL -}}
+{{- $imageData := partial "image-props.html" (dict "page" .Page "src" .Destination) -}}
+{{- $src := index $imageData "src" -}}
 {{- $alt := .Text | plainify -}}
 {{- $title := .Title | plainify -}}
 {{- $galleryID := printf "gallery-%s" (.Page.RelPermalink | urlize) -}}
 {{- with .Page.File -}}
   {{- $galleryID = printf "gallery-%s" .UniqueID -}}
 {{- end -}}
+{{- $stageStyle := printf "style=%q" (printf "--post-img-stage-width:%s; --post-img-aspect-ratio:%s;" (index $imageData "stageWidth") (index $imageData "aspectRatio")) | safeHTMLAttr -}}
 
-<span class="post-img-view">
-    {{- if .Page.Site.Params.fancybox -}}
-    <a class="post-img-link" data-fancybox="{{ $galleryID }}" href="{{ $src }}">
-    {{- end -}}
-        <img
-            class="responsive-image"
-            loading="lazy"
-            decoding="async"
-            src="{{ $src }}"
-            alt="{{ $alt }}"
-            {{- with $title }} title="{{ . }}"{{ end -}}
-        >
-    {{- if .Page.Site.Params.fancybox -}}
-    </a>
-    {{- end -}}
+<span class="post-img-view" data-image-enhanced="template">
+    <span class="post-img-stage" {{ $stageStyle }}>
+        {{- if .Page.Site.Params.fancybox -}}
+        <a class="post-img-link" data-fancybox="{{ $galleryID }}" href="{{ $src }}">
+        {{- end -}}
+            <img
+                class="responsive-image"
+                loading="lazy"
+                decoding="async"
+                src="{{ $src }}"
+                alt="{{ $alt }}"
+                {{- with index $imageData "width" }} width="{{ . }}"{{ end -}}
+                {{- with index $imageData "height" }} height="{{ . }}"{{ end -}}
+                {{- with $title }} title="{{ . }}"{{ end -}}
+            >
+        {{- if .Page.Site.Params.fancybox -}}
+        </a>
+        {{- end -}}
+        <span class="post-img-error-ui" aria-live="polite">
+            <span class="post-img-error-label">图片加载失败</span>
+        </span>
+    </span>
     {{- with $title -}}
     <span class="post-img-caption">{{ . }}</span>
     {{- end -}}

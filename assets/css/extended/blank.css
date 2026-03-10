@@ -11,8 +11,25 @@ Read https://github.com/adityatelange/hugo-PaperMod/wiki/FAQs#bundling-custom-cs
     text-align: center;
 }
 
+.post-img-stage {
+    position: relative;
+    display: inline-block;
+    width: min(100%, var(--post-img-stage-width, 100%));
+    max-width: 100%;
+    aspect-ratio: var(--post-img-aspect-ratio, auto);
+    overflow: hidden;
+    border-radius: 12px;
+    vertical-align: top;
+    isolation: isolate;
+}
+
 .post-img-link {
     display: inline-block;
+    max-width: 100%;
+    line-height: 0;
+}
+
+.post-img-stage > .post-img-link {
     max-width: 100%;
 }
 
@@ -21,8 +38,20 @@ Read https://github.com/adityatelange/hugo-PaperMod/wiki/FAQs#bundling-custom-cs
     max-width: 100%;
     width: auto;
     height: auto;
-    max-height: 33vh;
+    max-height: var(--content-image-max-height);
     margin: 0 auto;
+}
+
+.post-content > p > img:only-child,
+.post-content > p > a:only-child > img,
+.post-content figure > img {
+    display: block;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    max-height: var(--content-image-max-height);
+    margin: 0 auto;
+    object-fit: contain;
 }
 
 .post-img-caption {
