@@ -122,11 +122,15 @@ function setStageMetrics(wrapper, img) {
       "--post-img-aspect-ratio",
       `${naturalWidth || width} / ${naturalHeight || height}`
     );
+    stage.style.setProperty("--post-img-width", `${naturalWidth || width}`);
+    stage.style.setProperty("--post-img-height", `${naturalHeight || height}`);
     return;
   }
 
   stage.style.setProperty("--post-img-stage-width", "100%");
   stage.style.setProperty("--post-img-aspect-ratio", "16 / 10");
+  stage.style.setProperty("--post-img-width", "16");
+  stage.style.setProperty("--post-img-height", "10");
 }
 
 function setImageState(wrapper, state) {

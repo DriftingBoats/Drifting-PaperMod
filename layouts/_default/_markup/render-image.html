@@ -6,7 +6,7 @@
 {{- with .Page.File -}}
   {{- $galleryID = printf "gallery-%s" .UniqueID -}}
 {{- end -}}
-{{- $stageStyle := printf "style=%q" (printf "--post-img-stage-width:%s; --post-img-aspect-ratio:%s;" (index $imageData "stageWidth") (index $imageData "aspectRatio")) | safeHTMLAttr -}}
+{{- $stageStyle := printf "style=%q" (printf "--post-img-stage-width:%s; --post-img-aspect-ratio:%s; --post-img-width:%v; --post-img-height:%v;" (index $imageData "stageWidth") (index $imageData "aspectRatio") (index $imageData "width" | default 16) (index $imageData "height" | default 10)) | safeHTMLAttr -}}
 
 <span class="post-img-view" data-image-enhanced="template">
     <span class="post-img-stage" {{ $stageStyle }}>

@@ -9,12 +9,17 @@
 {{- $stageWidth := index $imageData "stageWidth" -}}
 {{- if .Get "width" -}}
   {{- $stageWidth = .Get "width" -}}
+  {{- if findRE `^\d+$` $stageWidth -}}
+    {{- $stageWidth = printf "%spx" $stageWidth -}}
+  {{- end -}}
 {{- end -}}
 {{- $aspectRatio := index $imageData "aspectRatio" -}}
 {{- if and $width $height -}}
   {{- $aspectRatio = printf "%s / %s" $width $height -}}
 {{- end -}}
-{{- $stageStyle := printf "style=%q" (printf "--post-img-stage-width:%s; --post-img-aspect-ratio:%s;" $stageWidth $aspectRatio) | safeHTMLAttr -}}
+{{- $sourceWidth := index $imageData "width" | default 16 -}}
+{{- $sourceHeight := index $imageData "height" | default 10 -}}
+{{- $stageStyle := printf "style=%q" (printf "--post-img-stage-width:%s; --post-img-aspect-ratio:%s; --post-img-width:%v; --post-img-height:%v;" $stageWidth $aspectRatio $sourceWidth $sourceHeight) | safeHTMLAttr -}}
 
 <figure{{ if or (.Get "class") (eq (.Get "align") "center") }} class="
            {{- if eq (.Get "align") "center" }}align-center {{ end }}

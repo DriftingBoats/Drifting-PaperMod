@@ -4,7 +4,7 @@
     --post-img-skeleton-shine: rgba(255, 255, 255, 0.48);
     --post-img-error-bg: rgba(15, 23, 42, 0.78);
     --post-img-error-text: #fff;
-    --post-img-error-button-bg: rgba(255, 255, 255, 0.16);
+    --post-img-error-button-bg: #ffffff29;
 }
 
 .dark {
@@ -16,11 +16,11 @@
 }
 
 .post-img-stage {
-    background: var(--post-img-stage-bg);
+    background: transparent;
 }
 
-.post-img-view.is-loaded .post-img-stage {
-    background: transparent;
+.post-img-view.is-loading .post-img-stage {
+    background: var(--post-img-stage-bg);
 }
 
 .post-img-stage::before,
@@ -125,6 +125,11 @@
     display: block;
     width: 100%;
     height: 100%;
+}
+
+.image-row-2col .post-img-view.is-loading .post-img-stage,
+.image-row-3col .post-img-view.is-loading .post-img-stage {
+    width: 100%;
 }
 
 .image-row-2col .post-img-stage > .post-img-link,

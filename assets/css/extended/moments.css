@@ -127,9 +127,9 @@ margin-bottom: 0.2rem;
 .moment-content-wrapper > p > .post-img-view:only-child {
 display: block;
 margin: 0.85rem 0;
-overflow: hidden;
-border-radius: 12px;
-background: var(--img-row-tile-bg, rgba(15, 23, 42, 0.04));
+overflow: visible;
+border-radius: 0;
+background: transparent;
 }
 
 .moment-content-wrapper > p > .post-img-view:only-child .post-img-link {

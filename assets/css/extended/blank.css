@@ -14,7 +14,11 @@ Read https://github.com/adityatelange/hugo-PaperMod/wiki/FAQs#bundling-custom-cs
 .post-img-stage {
     position: relative;
     display: inline-block;
-    width: min(100%, var(--post-img-stage-width, 100%));
+    width: min(
+        100%,
+        var(--post-img-stage-width, 100%),
+        calc(var(--content-image-max-height) * var(--post-img-width, 16) / var(--post-img-height, 10))
+    );
     max-width: 100%;
     aspect-ratio: var(--post-img-aspect-ratio, auto);
     overflow: hidden;
