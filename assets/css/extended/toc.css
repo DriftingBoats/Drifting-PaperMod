@@ -1,6 +1,6 @@
 :root {
-    --post-toc-width: 208px;
-    --post-toc-gap: 32px;
+    --post-toc-width: 272px;
+    --post-toc-gap: 24px;
     --post-toc-sticky-top: calc(var(--header-height) + var(--gap));
 }
 
@@ -176,7 +176,7 @@
     transform: translateY(-50%) scaleY(1);
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1024px) {
     .post-layout {
         grid-template-columns: minmax(0, 1fr) var(--post-toc-width);
         grid-template-areas: "main toc";
@@ -185,6 +185,7 @@
     }
 
     .entry-sidebar--toc {
+        min-width: var(--post-toc-width);
         position: sticky;
         top: var(--post-toc-sticky-top);
     }

@@ -31,6 +31,10 @@
     /* 滚动�?*/
     --scroll-track: #f1f3f4;
     --scroll-thumb: #c1c7cd;
+    --code-font-family: 'Cascadia Mono', 'Cascadia Code', 'Sarasa Mono SC', 'Noto Sans Mono CJK SC', 'Source Han Mono SC', 'JetBrains Mono', 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    --code-font-size: 1em;
+    --code-font-size-mobile: 1em;
+    --code-line-height: 1.72;
 }
 
 /* 深色模式样式变量 */
@@ -77,7 +81,7 @@
     border: 1px solid var(--code-inline-border);
     border-radius: 8px;
     font-size: 0.875em;
-    font-family: 'JetBrains Mono', 'Fira Code', Consolas, 'Courier New', monospace;
+    font-family: var(--code-font-family);
     font-weight: 500;
     white-space: nowrap;
     transition: all 0.15s ease;
@@ -775,9 +779,14 @@
     padding: 1.25rem !important;
     background: var(--code-bg) !important;
     color: var(--code-text);
-    font-family: 'JetBrains Mono', 'Fira Code', Consolas, 'Courier New', monospace;
-    font-size: 0.875rem;
-    line-height: 1.6;
+    font-family: var(--code-font-family);
+    font-size: var(--code-font-size);
+    line-height: var(--code-line-height);
+    font-weight: 400;
+    tab-size: 4;
+    font-variant-ligatures: none;
+    -webkit-font-feature-settings: "liga" 0, "calt" 0;
+    font-feature-settings: "liga" 0, "calt" 0;
     overflow-x: auto;
     border: none;
     border-radius: 0;
@@ -789,7 +798,9 @@
     padding: 0 !important;
     margin: 0 !important;
     border: none;
+    font-family: inherit;
     font-size: inherit;
+    font-weight: inherit;
     line-height: inherit;
 }
 
@@ -810,8 +821,8 @@
     padding-right: 0.75rem !important;
     padding-left: 0.5rem !important;
     margin-right: 0.75rem !important;
-    font-size: 0.8em !important;
-    opacity: 0.6 !important;
+    font-size: 0.82em !important;
+    opacity: 0.72 !important;
     color: var(--code-comment) !important;
     user-select: none !important;
     border-right: 1px solid var(--code-border) !important;
@@ -846,7 +857,7 @@
 /* 深色模式下行号样�?*/
 .dark .chroma .lnt,
 .dark .lnt {
-    opacity: 0.5 !important;
+    opacity: 0.62 !important;
     color: #8b949e !important;
 }
 
@@ -965,11 +976,11 @@
     
     .post-content pre {
         padding: 1rem !important;
-        font-size: 0.8rem;
+        font-size: var(--code-font-size-mobile);
     }
     
     .lnt {
-        font-size: 0.75em !important;
+        font-size: 0.8em !important;
         padding-right: 0.75rem !important;
         margin-right: 0.5rem;
     }
@@ -991,9 +1002,10 @@
 }
 
 .chroma code {
-    font-variant-ligatures: contextual;
-    -webkit-font-feature-settings: "calt";
-    font-feature-settings: "calt";
+    font-family: inherit;
+    font-variant-ligatures: none;
+    -webkit-font-feature-settings: "liga" 0, "calt" 0;
+    font-feature-settings: "liga" 0, "calt" 0;
 }
 
 /* ====== 文本选择样式 ====== */
@@ -1064,9 +1076,9 @@
     text-align: right !important;
     padding: 0 0.4em 0 0 !important;
     margin: 0 !important;
-    font-size: 0.7em !important;
-    opacity: 0.35 !important;
-    color: #aaa !important;
+    font-size: 0.82em !important;
+    opacity: 0.58 !important;
+    color: var(--code-comment) !important;
     user-select: none !important;
     text-decoration: none !important;
     cursor: default !important;
@@ -1088,8 +1100,8 @@
 .dark .code-details-content .lnt,
 .dark .chroma .lnt,
 .dark .lnt {
-    opacity: 0.25 !important;
-    color: #777 !important;
+    opacity: 0.5 !important;
+    color: #8b949e !important;
 }
 
 /* 代码列样�?- 防止横向滚动 */

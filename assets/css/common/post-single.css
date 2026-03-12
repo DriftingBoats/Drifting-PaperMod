@@ -5,7 +5,7 @@
 
 .post-title {
     margin-bottom: 2px;
-    font-size: 40px;
+    font-size: 36px;
 }
 
 .post-description {
@@ -38,6 +38,8 @@
 
 .post-content {
     color: var(--content);
+    font-size: 16px;
+    line-height: 1.75;
 }
 
 .post-content h3,
@@ -49,16 +51,16 @@
 
 .post-content h1 {
     margin: 40px auto 32px;
-    font-size: 40px;
+    font-size: 34px;
 }
 
 .post-content h2 {
     margin: 32px auto 24px;
-    font-size: 32px;
+    font-size: 28px;
 }
 
 .post-content h3 {
-    font-size: 24px;
+    font-size: 22px;
 }
 
 .post-content h4 {
@@ -410,4 +412,27 @@ h1>a>svg {
 img.in-text {
     display: inline;
     margin: auto;
+}
+
+@media (max-width: 768px) {
+    .post-title {
+        font-size: 32px;
+    }
+
+    .post-content {
+        font-size: 16px;
+        line-height: 1.75;
+    }
+
+    .post-content h1 {
+        font-size: 30px;
+    }
+
+    .post-content h2 {
+        font-size: 24px;
+    }
+
+    .post-content h3 {
+        font-size: 20px;
+    }
 }
